@@ -22,8 +22,9 @@ Skills that let non-technical admins create and edit pages on the Magnus Consult
 | Skill | Purpose |
 |---|---|
 | `magnus-edit-page` | Edit copy, headings, CTAs, SEO, or component props on an existing page. Refuses off-system changes. Enforces approval gates on legal pages, growth stories, the homepage hero, and any client metric. |
+| `magnus-add-insight-article` | Create a new article under `/insights/<slug>`. Generates the full page from the canonical template and inserts a matching `ArticleCard` at the top of the `/insights` grid. Enforces the four documented categories, the four known authors, and a content sign-off gate. |
 
-More skills land here as they're built (`magnus-add-insight-article`, `magnus-add-growth-story`, `magnus-publish`, etc.).
+More skills land here as they're built (`magnus-add-growth-story`, `magnus-add-report`, `magnus-add-team-member`, `magnus-publish`, etc.).
 
 ## Required context
 
