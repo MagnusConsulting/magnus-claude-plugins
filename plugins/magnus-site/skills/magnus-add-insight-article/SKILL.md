@@ -217,11 +217,30 @@ After writing:
 
 If anything fails, tell the user before declaring done. Roll back by deleting the new file and reverting the index edit if the user asks.
 
-## Step 10 — Hand off
+## Step 10 — Surface the new article in the live preview
+
+The target route is `/insights/<slug>`. Get the admin looking at the new page in real time:
+
+1. Call `preview_list()`.
+2. **If a server named `magnus-dev` is running** — capture its `serverId` and call:
+   ```
+   preview_eval({ serverId, expression: "window.location.assign('/insights/<slug>')" })
+   ```
+   The preview pane now shows the new article. HMR keeps it in sync if the user asks for follow-up tweaks via `magnus-edit-page`.
+3. **If no `magnus-dev` server is running** — ask the user once:
+   > Want to preview the new article live? I can spin up the dev server in the right-hand pane and open `/insights/<slug>`.
+   - If yes → invoke the **magnus-preview** skill, passing `/insights/<slug>` as the target route.
+   - If no → continue to Step 11.
+4. **If `preview_*` tools error or aren't available** — skip silently and continue.
+
+Don't screenshot unless the user asks.
+
+## Step 11 — Hand off
 
 End with a one-line summary and one suggested next step:
 
-- "New article scaffolded at `/insights/<slug>` and listed on `/insights`. Approval recorded for <name>. Ready to preview? Run **magnus-preview**. Ready to ship? Run **magnus-publish** — the audit log will travel with the commit."
+- If the preview is showing the article: "New article scaffolded at `/insights/<slug>` and listed on `/insights`. Now showing in the preview pane. Approval for <name> is recorded. Ready to ship? Run **magnus-publish**."
+- If the user declined the preview: "New article scaffolded at `/insights/<slug>` and listed on `/insights`. Approval for <name> is recorded. Ready to preview later? Run **magnus-preview**. Ready to ship? Run **magnus-publish**."
 
 Do not commit, push, or run a build yourself.
 

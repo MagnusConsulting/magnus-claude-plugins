@@ -142,12 +142,34 @@ After writing:
 
 If anything is off, tell the user before declaring done.
 
-## Step 11 — Hand off
+## Step 11 — Surface the change in the live preview
+
+After saving, get the change in front of the admin in real time. Resolve the URL of the page just edited (e.g. `src/pages/about.astro` → `/about`, `src/pages/solutions/embed.astro` → `/solutions/embed`, `src/pages/index.astro` → `/`).
+
+Then:
+
+1. Call `preview_list()`.
+2. **If a server named `magnus-dev` is running** — capture its `serverId` and call:
+   ```
+   preview_eval({ serverId, expression: "window.location.assign('<route>')" })
+   ```
+   Tell the user the preview is now showing the changed page. Astro HMR will keep it in sync with subsequent edits.
+3. **If no `magnus-dev` server is running** — ask the user once:
+   > Want to preview this live? I can spin up the dev server in the right-hand pane and open `<route>`.
+   - If yes → invoke the **magnus-preview** skill, passing `<route>` as the target.
+   - If no → continue to Step 12.
+4. **If `preview_*` tools error or aren't available** (Claude Code terminal context, no Desktop preview pane) — skip silently and continue to Step 12.
+
+Don't screenshot the preview unless the user asks. The pane is already visible to them.
+
+## Step 12 — Hand off
 
 Finish with a one-line summary of what changed and one suggested next step:
 
-- "Ready to preview? Run **magnus-preview**."
-- "Ready to ship? Run **magnus-publish**." (For gated changes, remind the user the approval is already recorded in `.magnus-changes/pending.log`.)
+- If the preview is showing the page: "Change is live at `<route>` in the preview pane. Ready to ship? Run **magnus-publish**."
+- If the user declined the preview: "Ready to preview later? Run **magnus-preview**. Ready to ship? Run **magnus-publish**."
+
+For gated changes, remind the user the approval is already recorded in `.magnus-changes/pending.log` and will travel with the commit.
 
 Do not push, commit, or build yourself — that is `magnus-publish`'s job.
 

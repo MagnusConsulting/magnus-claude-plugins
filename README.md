@@ -21,10 +21,19 @@ Skills that let non-technical admins create and edit pages on the Magnus Consult
 
 | Skill | Purpose |
 |---|---|
-| `magnus-edit-page` | Edit copy, headings, CTAs, SEO, or component props on an existing page. Refuses off-system changes. Enforces approval gates on legal pages, growth stories, the homepage hero, and any client metric. |
-| `magnus-add-insight-article` | Create a new article under `/insights/<slug>`. Generates the full page from the canonical template and inserts a matching `ArticleCard` at the top of the `/insights` grid. Enforces the four documented categories, the four known authors, and a content sign-off gate. |
+| `magnus-edit-page` | Edit copy, headings, CTAs, SEO, or component props on an existing page. Refuses off-system changes. Enforces approval gates on legal pages, growth stories, the homepage hero, and any client metric. Auto-navigates the live preview pane to the edited page. |
+| `magnus-add-insight-article` | Create a new article under `/insights/<slug>`. Generates the full page from the canonical template and inserts a matching `ArticleCard` at the top of the `/insights` grid. Enforces the four documented categories, the four known authors, and a content sign-off gate. Auto-navigates the live preview pane to the new article. |
+| `magnus-preview` | Start, navigate, or stop the local Astro dev server inside the Claude Desktop preview pane. Other skills call this after applying changes so the admin sees results in real time. Reuses `.claude/launch.json` in the magnus repo (created on first use). |
 
 More skills land here as they're built (`magnus-add-growth-story`, `magnus-add-report`, `magnus-add-team-member`, `magnus-publish`, etc.).
+
+## Live preview
+
+The plugin assumes you're running it inside Claude Desktop with the preview pane available. When an edit or create skill applies a change, it checks for a running `magnus-dev` server and either navigates it to the changed URL or asks whether to spin one up. Astro hot module reloading keeps the preview in sync as you iterate.
+
+If you're running in a Claude Code terminal context without the preview pane, the skills detect the absence and skip the preview hook silently — file changes are still applied as normal.
+
+The preview's dev server config lives at `<magnus-repo>/.claude/launch.json` (committed to the magnus repo, useful to any developer working there).
 
 ## Required context
 
