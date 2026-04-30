@@ -227,20 +227,24 @@ If anything fails, tell the user before declaring done. Roll back by deleting th
 
 ## Step 10 — Surface the new article in the live preview
 
-The target route is `/insights/<slug>`. Get the admin looking at the new page in real time:
+The target route is `/insights/<slug>`. Cascade:
 
-1. Try `preview_list()`.
-2. **If it succeeds and a `magnus-dev` server is in the list** — capture its `serverId` and navigate the pane:
+1. **Try `preview_list()`.** If success and a `magnus-dev` server is in the list — capture its `serverId` and navigate the pane:
    ```
    preview_eval({ serverId, expression: "window.location.assign('/insights/<slug>')" })
    ```
-   The preview pane now shows the new article. HMR keeps it in sync if the user asks for follow-up tweaks via `magnus-edit-page`. Done.
-3. **Otherwise** (preview_list errors with tool-not-available, OR succeeds but no `magnus-dev` server is running) — ask the user once:
+   The preview pane now shows the new article. Done.
+2. **Otherwise try `magnus_dev_status`.** If success and `running: true` — open the URL via the helper:
+   ```
+   magnus_open_url({ url: "http://localhost:4321/insights/<slug>" })
+   ```
+   The article opens in the user's default browser. Done.
+3. **Otherwise** (no preview running anywhere, or both MCPs unavailable) — ask the user once:
    > Want to preview the new article live? I can spin up the dev server and open `/insights/<slug>`.
-   - If yes → invoke the **magnus-preview** skill, passing `/insights/<slug>` as the target route. It will pick the right mechanism (preview pane or system browser) for the current context.
+   - If yes → invoke the **magnus-preview** skill, passing `/insights/<slug>` as the target route. It will pick the right mechanism for the current context.
    - If no → continue to Step 11.
 
-Don't screenshot unless the user asks.
+HMR keeps the preview in sync if the user asks for follow-up tweaks via `magnus-edit-page`. Don't screenshot unless the user asks.
 
 ## Step 11 — Hand off
 

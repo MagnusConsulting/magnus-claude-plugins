@@ -154,20 +154,24 @@ If anything is off, tell the user before declaring done.
 
 After saving, get the change in front of the admin in real time. Resolve the URL of the page just edited (e.g. `src/pages/about.astro` → `/about`, `src/pages/solutions/embed.astro` → `/solutions/embed`, `src/pages/index.astro` → `/`).
 
-Then:
+Cascade:
 
-1. Try `preview_list()`.
-2. **If it succeeds and a `magnus-dev` server is in the list** — capture its `serverId` and navigate the pane:
+1. **Try `preview_list()`.** If success and a `magnus-dev` server is in the list — capture its `serverId` and navigate the pane:
    ```
    preview_eval({ serverId, expression: "window.location.assign('<route>')" })
    ```
-   Tell the user the preview pane is now showing the changed page. Astro HMR keeps it in sync with subsequent edits. Done.
-3. **Otherwise** (preview_list errors with tool-not-available, OR succeeds but no `magnus-dev` server is running, OR a system-browser preview is already open on port 4321) — ask the user once:
+   Tell the user the preview pane is now showing the changed page. Done.
+2. **Otherwise try `magnus_dev_status`.** If success and `running: true` — the helper-managed dev server is already up. Just open the URL:
+   ```
+   magnus_open_url({ url: "http://localhost:4321<route>" })
+   ```
+   Tell the user the changed page is now open in their browser. Done.
+3. **Otherwise** (no preview running anywhere, or both MCPs unavailable) — ask the user once:
    > Want to preview this live? I can spin up the dev server and open `<route>`.
-   - If yes → invoke the **magnus-preview** skill, passing `<route>` as the target route. It will pick the right mechanism (preview pane or system browser) for the current context.
+   - If yes → invoke the **magnus-preview** skill, passing `<route>` as the target. It will pick the right mechanism for the current context.
    - If no → continue to Step 12.
 
-Don't screenshot the preview unless the user asks.
+Astro HMR keeps the preview in sync with subsequent edits regardless of which path was used. Don't screenshot the preview unless the user asks.
 
 ## Step 12 — Hand off
 

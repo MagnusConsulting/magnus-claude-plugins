@@ -30,18 +30,24 @@ If you're not in the magnus repo, every skill will offer to invoke `magnus-setup
 
 More skills land here as they're built (`magnus-add-growth-story`, `magnus-add-report`, `magnus-add-team-member`, `magnus-publish`, etc.).
 
-### Prototype: `magnus-helper` MCP
+### Bundled MCP: `magnus-helper`
 
-This release ships a tiny local MCP server (`plugins/magnus-site/helper/echo-mcp.js`) that the plugin auto-starts on enable, declared in `plugins/magnus-site/.mcp.json`. It currently exposes a single diagnostic tool — `magnus_helper_ping` — which returns the host's environment so we can confirm the helper actually runs on the user's Mac (and is reachable from a Claude Cowork sandbox) before building out the real `magnus_dev_start` / `magnus_open_url` tools.
+The plugin ships a small local Node.js MCP server (`plugins/magnus-site/helper/server.js`) that auto-starts when the plugin is enabled, declared in `plugins/magnus-site/.mcp.json`. It runs on the user's Mac (not in any sandbox), so it can do things that are otherwise impossible from inside a Claude Cowork session — like start the magnus dev server on the user's machine and open URLs in their default browser.
 
-To test in Cowork:
+Tools exposed:
 
-1. `/plugin marketplace update magnus-claude-plugins`
-2. `/reload-plugins` (or restart the session)
-3. Run `/mcp` and confirm `magnus-helper` appears in the list.
-4. Ask Claude: "Use the `magnus_helper_ping` tool and show me the output."
+| Tool | Purpose |
+|---|---|
+| `magnus_helper_ping` | Diagnostics — hostname, platform, plugin root, working directory. Used to confirm the helper is reachable. |
+| `magnus_dev_status` | Cheap idempotent check: is `npm run dev` running on `localhost:4321`? |
+| `magnus_dev_start` | Start the dev server in the background. Idempotent. Resolves the magnus repo path by scanning `~/dev`, `~/Documents`, `~/Sites`, `~/Projects`, `~/Code`, `~/Developer` (2 levels deep) and persisting the choice at `~/.config/magnus-helper/config.json`. Returns `AMBIGUOUS_REPO` / `REPO_NOT_FOUND` errors when the caller needs to ask the user. |
+| `magnus_dev_stop` | Stop whatever is on port 4321 (TERM via `lsof + kill`). |
+| `magnus_open_url` | Open a `localhost:4321` URL in the user's default browser. Refuses anything else. |
+| `magnus_set_repo_path` | Persist an absolute path to the magnus repo on disk. Used after `AMBIGUOUS_REPO` / `REPO_NOT_FOUND`. |
 
-Expected: a JSON blob whose `hostname` matches your Mac's hostname (not a sandbox VM identifier), `platform: "darwin"`, `pluginRoot` resolved to the plugin's installed path, and `cwd` somewhere on your local filesystem. If those check out, the bridging works and we'll wire the real tools next.
+Zero external dependencies; implements the minimum MCP protocol over stdio (initialize / tools/list / tools/call) directly. The `magnus-preview` skill prefers Claude_Preview when available and falls through to this helper in Cowork.
+
+The helper persists its repo-path config at `~/.config/magnus-helper/config.json`. Delete that file to force re-discovery.
 
 ## Live preview
 
