@@ -29,11 +29,14 @@ More skills land here as they're built (`magnus-add-growth-story`, `magnus-add-r
 
 ## Live preview
 
-The plugin assumes you're running it inside Claude Desktop with the preview pane available. When an edit or create skill applies a change, it checks for a running `magnus-dev` server and either navigates it to the changed URL or asks whether to spin one up. Astro hot module reloading keeps the preview in sync as you iterate.
+The `magnus-preview` skill picks one of two mechanisms automatically based on what the current context supports:
 
-If you're running in a Claude Code terminal context without the preview pane, the skills detect the absence and skip the preview hook silently — file changes are still applied as normal.
+- **Claude Desktop preview pane** (solo Desktop, Claude Code with the `Claude_Preview` MCP wired) — shows the running site in the right-hand pane. Uses `<magnus-repo>/.claude/launch.json` (created on first use, committed to the magnus repo).
+- **System default browser** (Cowork or anywhere else `Claude_Preview` isn't wired) — starts `npm run dev` in the background and opens `http://localhost:4321<route>` in a separate browser window.
 
-The preview's dev server config lives at `<magnus-repo>/.claude/launch.json` (committed to the magnus repo, useful to any developer working there).
+Astro hot module reloading keeps either preview in sync as you iterate.
+
+When an edit or create skill applies a change, it checks for an existing preview pane session first; otherwise it asks once whether to spin up a preview, then delegates to `magnus-preview`, which handles the cascade.
 
 ## Required context
 

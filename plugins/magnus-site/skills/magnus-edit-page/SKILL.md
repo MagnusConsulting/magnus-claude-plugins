@@ -148,19 +148,18 @@ After saving, get the change in front of the admin in real time. Resolve the URL
 
 Then:
 
-1. Call `preview_list()`.
-2. **If a server named `magnus-dev` is running** — capture its `serverId` and call:
+1. Try `preview_list()`.
+2. **If it succeeds and a `magnus-dev` server is in the list** — capture its `serverId` and navigate the pane:
    ```
    preview_eval({ serverId, expression: "window.location.assign('<route>')" })
    ```
-   Tell the user the preview is now showing the changed page. Astro HMR will keep it in sync with subsequent edits.
-3. **If no `magnus-dev` server is running** — ask the user once:
-   > Want to preview this live? I can spin up the dev server in the right-hand pane and open `<route>`.
-   - If yes → invoke the **magnus-preview** skill, passing `<route>` as the target.
+   Tell the user the preview pane is now showing the changed page. Astro HMR keeps it in sync with subsequent edits. Done.
+3. **Otherwise** (preview_list errors with tool-not-available, OR succeeds but no `magnus-dev` server is running, OR a system-browser preview is already open on port 4321) — ask the user once:
+   > Want to preview this live? I can spin up the dev server and open `<route>`.
+   - If yes → invoke the **magnus-preview** skill, passing `<route>` as the target route. It will pick the right mechanism (preview pane or system browser) for the current context.
    - If no → continue to Step 12.
-4. **If `preview_*` tools error or aren't available** (Claude Code terminal context, no Desktop preview pane) — skip silently and continue to Step 12.
 
-Don't screenshot the preview unless the user asks. The pane is already visible to them.
+Don't screenshot the preview unless the user asks.
 
 ## Step 12 — Hand off
 

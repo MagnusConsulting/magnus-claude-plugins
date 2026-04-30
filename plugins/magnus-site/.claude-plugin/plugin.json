@@ -1,7 +1,7 @@
 {
   "name": "magnus-site",
   "description": "Admin skills for the Magnus Consulting Astro website. Lets non-technical administrators create and edit pages safely within the documented component library, design tokens, and brand voice rules in docs/llm-context.md.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "Lee Davies"
   }
