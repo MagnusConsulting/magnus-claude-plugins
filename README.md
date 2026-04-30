@@ -30,6 +30,19 @@ If you're not in the magnus repo, every skill will offer to invoke `magnus-setup
 
 More skills land here as they're built (`magnus-add-growth-story`, `magnus-add-report`, `magnus-add-team-member`, `magnus-publish`, etc.).
 
+### Prototype: `magnus-helper` MCP
+
+This release ships a tiny local MCP server (`plugins/magnus-site/helper/echo-mcp.js`) that the plugin auto-starts on enable, declared in `plugins/magnus-site/.mcp.json`. It currently exposes a single diagnostic tool — `magnus_helper_ping` — which returns the host's environment so we can confirm the helper actually runs on the user's Mac (and is reachable from a Claude Cowork sandbox) before building out the real `magnus_dev_start` / `magnus_open_url` tools.
+
+To test in Cowork:
+
+1. `/plugin marketplace update magnus-claude-plugins`
+2. `/reload-plugins` (or restart the session)
+3. Run `/mcp` and confirm `magnus-helper` appears in the list.
+4. Ask Claude: "Use the `magnus_helper_ping` tool and show me the output."
+
+Expected: a JSON blob whose `hostname` matches your Mac's hostname (not a sandbox VM identifier), `platform: "darwin"`, `pluginRoot` resolved to the plugin's installed path, and `cwd` somewhere on your local filesystem. If those check out, the bridging works and we'll wire the real tools next.
+
 ## Live preview
 
 The `magnus-preview` skill picks one of two mechanisms automatically based on what the current context supports:

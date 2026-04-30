@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "magnus-helper": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/helper/echo-mcp.js"]
+    }
+  }
+}
