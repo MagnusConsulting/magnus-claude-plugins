@@ -9,7 +9,15 @@ You are editing an existing page on the Magnus Consulting Astro site. The compon
 
 ## Step 1 — Load the contract (non-negotiable)
 
-Read `docs/llm-context.md` in full before doing anything else. It is the source of truth for components, props, tokens, voice, and SEO rules. If it is missing, stop and tell the user.
+Read `docs/llm-context.md` in full before doing anything else. It is the source of truth for components, props, tokens, voice, and SEO rules.
+
+If the file is missing, the working directory isn't the magnus repo. Don't try to proceed. Tell the user:
+
+> This folder isn't the magnus repo (no `docs/llm-context.md` found). Want me to:
+> 1. Run **magnus-setup** to clone the repo here or locate an existing clone, or
+> 2. Exit so you can `cd` to the magnus repo and re-run this skill?
+
+Wait for their direction. If they pick 1, invoke **magnus-setup**. If they pick 2, stop. Don't read or edit anything until you confirm the working directory is correct.
 
 ## Step 2 — Identify the target page
 

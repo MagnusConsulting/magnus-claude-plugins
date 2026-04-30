@@ -20,7 +20,13 @@ Verify all three are present:
 - `src/pages/` directory
 - `docs/llm-context.md`
 
-If any are missing, stop and tell the user. The preview must run from the magnus repo root.
+If any are missing, the working directory isn't the magnus repo. Don't try to start a server. Tell the user:
+
+> This folder isn't the magnus repo (preview needs `package.json`, `src/pages/`, `docs/llm-context.md`). Want me to:
+> 1. Run **magnus-setup** to clone the repo here or locate an existing clone, or
+> 2. Exit so you can `cd` to the magnus repo and re-run this skill?
+
+Wait for their direction. If they pick 1, invoke **magnus-setup**. If they pick 2, stop.
 
 ## Step 2 — Detect which path is available
 

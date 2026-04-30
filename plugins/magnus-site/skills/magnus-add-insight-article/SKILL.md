@@ -11,6 +11,14 @@ You are creating a new article under `/insights/<slug>` on the Magnus Consulting
 
 Read `docs/llm-context.md` in full. Confirm `src/pages/insights/index.astro` exists and read it — it is the source of truth for the current category filter values, author colour conventions, and existing card layout.
 
+If `docs/llm-context.md` is missing, the working directory isn't the magnus repo. Don't proceed. Tell the user:
+
+> This folder isn't the magnus repo (no `docs/llm-context.md` found). Want me to:
+> 1. Run **magnus-setup** to clone the repo here or locate an existing clone, or
+> 2. Exit so you can `cd` to the magnus repo and re-run this skill?
+
+Wait for their direction. If they pick 1, invoke **magnus-setup**. If they pick 2, stop.
+
 ## Step 2 — Gather the article inputs
 
 Ask the user for each of these unless already supplied. One short prompt per turn or one bundled prompt — your call. Do not invent any of them.

@@ -21,9 +21,12 @@ Skills that let non-technical admins create and edit pages on the Magnus Consult
 
 | Skill | Purpose |
 |---|---|
+| `magnus-setup` | Bootstrap the magnus website repo so the other skills can run. Clones `ssu96ld/magnusconsulting-co-uk` into the current folder, accepts a path to an existing clone, or hands off cleanly so the user can `cd` themselves. Runs `npm install` after cloning. |
 | `magnus-edit-page` | Edit copy, headings, CTAs, SEO, or component props on an existing page. Refuses off-system changes. Enforces approval gates on legal pages, growth stories, the homepage hero, and any client metric. Auto-navigates the live preview pane to the edited page. |
 | `magnus-add-insight-article` | Create a new article under `/insights/<slug>`. Generates the full page from the canonical template and inserts a matching `ArticleCard` at the top of the `/insights` grid. Enforces the four documented categories, the four known authors, and a content sign-off gate. Auto-navigates the live preview pane to the new article. |
-| `magnus-preview` | Start, navigate, or stop the local Astro dev server inside the Claude Desktop preview pane. Other skills call this after applying changes so the admin sees results in real time. Reuses `.claude/launch.json` in the magnus repo (created on first use). |
+| `magnus-preview` | Start, navigate, or stop the local Astro dev server. Tries the Claude Desktop preview pane first; falls back to the system default browser when the preview MCP isn't wired (e.g. Cowork). Other skills call this after applying changes so the admin sees results in real time. |
+
+If you're not in the magnus repo, every skill will offer to invoke `magnus-setup` rather than failing silently.
 
 More skills land here as they're built (`magnus-add-growth-story`, `magnus-add-report`, `magnus-add-team-member`, `magnus-publish`, etc.).
 
