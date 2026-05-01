@@ -25,11 +25,13 @@ Skills that let non-technical admins create and edit pages on the Magnus Consult
 | `magnus-edit-page` | Edit copy, headings, CTAs, SEO, or component props on an existing page. Refuses off-system changes. Enforces approval gates on legal pages, growth stories, the homepage hero, and any client metric. Auto-navigates the live preview pane to the edited page. |
 | `magnus-add-insight-article` | Create a new article under `/insights/<slug>`. Generates the full page from the canonical template and inserts a matching `ArticleCard` at the top of the `/insights` grid. Enforces the four documented categories, the four known authors, and a content sign-off gate. Auto-navigates the live preview pane to the new article. |
 | `magnus-add-team-member` | Add a new team member profile by appending a typed entry to `src/data/team.ts`. The dynamic route at `/team/[slug]` auto-generates the bio page; the team index surfaces the matching card. Enforces the documented data shape, the five team groups, the solution-label → href mapping, and a content sign-off gate. Auto-navigates the live preview to the new bio. |
-| `magnus-preview` | Start, navigate, or stop the local Astro dev server. Tries the Claude Desktop preview pane first; falls back to the system default browser when the preview MCP isn't wired (e.g. Cowork). Other skills call this after applying changes so the admin sees results in real time. |
+| `magnus-add-report` | Create a new downloadable report or whitepaper at `/insights/reports/<slug>`. Generates the full landing page from the canonical template (breadcrumb, hero, key findings, body, download CTA) and inserts a matching `ReportCard` on the reports index. Routes the user to `magnus-manage-assets` first if the PDF isn't uploaded. Content-gated. |
+| `magnus-add-growth-story` | Create a new client growth story under `/impact/growth-story/<client>/<slug>`. Writes a markdown file matching the documented zod schema (frontmatter only, no body) and inserts a matching `CsCard` on `/impact`. Double-gated — one approval for the story, one for the client metric. |
+| `magnus-manage-assets` | Add, replace, or remove static files in `public/` — team headshots, client logos, report PDFs, hero images, icons. Saves to the right subdirectory with sanitised naming, optionally wires the path into a referencing data file (e.g. `team.ts`), and gates replacement of firm-published artefacts (reports, growth-story assets, favicon). |
+| `magnus-preview` | Start, navigate, or stop the local Astro dev server. Tries the Claude Desktop preview pane first; falls back to `magnus-helper` (Cowork) and then the system default browser. Other skills call this after applying changes so the admin sees results in real time. |
+| `magnus-publish` | Validate, build, branch, commit, push, and open a PR. Reads `.magnus-changes/pending.log` to embed every gated approval into the commit message and PR body, then truncates the log. Never pushes to `main` — branch protection plus this skill's logic ensure every change goes through PR review before deploy. |
 
 If you're not in the magnus repo, every skill will offer to invoke `magnus-setup` rather than failing silently.
-
-More skills land here as they're built (`magnus-add-growth-story`, `magnus-add-report`, `magnus-add-team-member`, `magnus-publish`, etc.).
 
 ### Bundled MCP: `magnus-helper`
 
