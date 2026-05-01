@@ -30,6 +30,9 @@ Skills that let non-technical admins create and edit pages on the Magnus Consult
 | `magnus-manage-assets` | Add, replace, or remove static files in `public/` — team headshots, client logos, report PDFs, hero images, icons. Saves to the right subdirectory with sanitised naming, optionally wires the path into a referencing data file (e.g. `team.ts`), and gates replacement of firm-published artefacts (reports, growth-story assets, favicon). |
 | `magnus-preview` | Start, navigate, or stop the local Astro dev server. Tries the Claude Desktop preview pane first; falls back to `magnus-helper` (Cowork) and then the system default browser. Other skills call this after applying changes so the admin sees results in real time. |
 | `magnus-publish` | Validate, build, branch, commit, push, and open a PR. Reads `.magnus-changes/pending.log` to embed every gated approval into the commit message and PR body, then truncates the log. Never pushes to `main` — branch protection plus this skill's logic ensure every change goes through PR review before deploy. |
+| `magnus-add-page` | Create a generic standard content page that doesn't fit the specific creation templates — legal notices, landing pages, "About [topic]" pages, careers, press kits, sustainability statements. Assembles only from documented components. Gated for legal pages. |
+| `magnus-add-section` | Drop a new section into an existing page using only documented components. Picks the right one (HeroSection, FeatureBlock, SectionIntro + cards, CtaSection, FaqAccordion, TestimonialWide, etc.) for the user's intent, manages imports, and preserves section-background rhythm. |
+| `magnus-update-nav` | Edit `Nav.astro` and / or `Footer.astro` — add, remove, rename, reorder menu items, change submenu structure, rewire `activeLink` references across every page that uses the nav. Always gated. |
 
 If you're not in the magnus repo, every skill will offer to invoke `magnus-setup` rather than failing silently.
 
