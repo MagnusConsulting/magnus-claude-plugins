@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnus Site Admin Toolkit — User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --coral:           #F55D4B;
+    --coral-dark:      #DB5344;
+    --navy:            #2C3E50;
+    --navy-dark:       #1F3038;
+    --navy-deep:       #162930;
+    --turquoise:       #009FAC;
+    --turquoise-dark:  #00808A;
+    --yellow:          #FFBE3B;
+    --slate:           #516572;
+    --slate-light:     #7A8894;
+    --gray:            #E8EAED;
+    --gray-light:      #F5F6F7;
+    --gray-lighter:    #FAFBFC;
+    --white:           #FFFFFF;
+
+    --font-heading: 'Libre Baskerville', Georgia, serif;
+    --font-body:    'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
+    --sp-5: 1.25rem; --sp-6: 1.5rem; --sp-7: 1.75rem; --sp-8: 2rem;
+    --sp-10: 2.5rem; --sp-12: 3rem; --sp-16: 4rem; --sp-20: 5rem;
+    --sp-24: 6rem;
+
+    --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-full: 9999px;
+
+    --t: 0.2s ease;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-body);
+    color: var(--navy);
+    background: var(--white);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--coral); text-decoration: none; transition: color var(--t); }
+a:hover { color: var(--coral-dark); }
+
+h1, h2 { font-family: var(--font-heading); color: var(--navy); line-height: 1.15; font-weight: 700; }
+h3, h4, h5, h6 { font-family: var(--font-body); color: var(--navy); font-weight: 600; line-height: 1.3; }
+h1 { font-size: clamp(34px, 4.6vw, 52px); margin: 0 0 var(--sp-6); }
+h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 0 0 var(--sp-6); }
+h3 { font-size: clamp(18px, 2vw, 22px); margin: 0 0 var(--sp-4); }
+h4 { font-size: 16px; margin: 0 0 var(--sp-3); }
+
+p  { margin: 0 0 var(--sp-4); color: var(--slate); font-size: 15px; line-height: 1.75; }
+p:last-child { margin-bottom: 0; }
+
+ul, ol { color: var(--slate); font-size: 15px; line-height: 1.75; }
+li + li { margin-top: var(--sp-2); }
+
+strong { color: var(--navy); font-weight: 600; }
+
+code, kbd {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--gray-light);
+    padding: 1px 6px;
+    border-radius: var(--r-sm);
+    color: var(--navy);
+}
+
+.container        { max-width: 1100px; margin: 0 auto; padding: 0 var(--sp-8); }
+.container-narrow { max-width: 780px;  margin: 0 auto; padding: 0 var(--sp-8); }
+
+.section          { padding: var(--sp-20) 0; }
+.section-sm       { padding: var(--sp-12) 0; }
+.section-bg-light { background: var(--white); }
+.section-bg-alt   { background: var(--gray-lighter); }
+.section-bg-navy  { background: var(--navy); color: var(--white); }
+.section-bg-navy h2, .section-bg-navy h3, .section-bg-navy h4 { color: var(--white); }
+.section-bg-navy p, .section-bg-navy li { color: rgba(255,255,255,0.78); }
+.section-bg-navy strong { color: var(--white); }
+
+.eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: var(--sp-3);
+}
+
+.accent { color: var(--coral); }
+
+/* Top bar */
+.topbar {
+    background: linear-gradient(to right, var(--navy) 0%, var(--navy-dark) 100%);
+    padding: var(--sp-4) 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.topbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--sp-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--white);
+}
+.brand-name {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--coral);
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+.brand-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-top: 2px;
+    line-height: 1;
+}
+.topbar-meta {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+}
+
+/* Hero */
+.hero {
+    background:
+        radial-gradient(ellipse at top right, rgba(245,93,75,0.12) 0%, transparent 60%),
+        linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+    color: var(--white);
+    padding: var(--sp-24) 0 var(--sp-20);
+}
+.hero h1 { color: var(--white); max-width: 780px; }
+.hero p.lede {
+    color: rgba(255,255,255,0.82);
+    font-size: 18px;
+    line-height: 1.65;
+    max-width: 640px;
+    margin: var(--sp-6) 0 0;
+}
+
+/* TOC under hero */
+.toc {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray);
+    padding: var(--sp-5) 0;
+}
+.toc-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--sp-8);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-6);
+    font-size: 12px;
+    font-weight: 600;
+}
+.toc a {
+    color: var(--slate);
+    transition: color var(--t);
+}
+.toc a:hover { color: var(--coral); }
+
+/* Section intro */
+.section-intro {
+    max-width: 720px;
+    margin-bottom: var(--sp-10);
+}
+
+/* Steps loop */
+.loop {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--sp-5);
+    counter-reset: loop;
+    margin-top: var(--sp-8);
+}
+.loop-step {
+    counter-increment: loop;
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-top: 3px solid var(--coral);
+    border-radius: var(--r-lg);
+    padding: var(--sp-7);
+    position: relative;
+}
+.loop-step::before {
+    content: counter(loop);
+    position: absolute;
+    top: var(--sp-5);
+    right: var(--sp-5);
+    font-family: var(--font-heading);
+    font-size: 36px;
+    color: var(--coral);
+    line-height: 1;
+    opacity: 0.25;
+}
+.loop-step h4 { margin-bottom: var(--sp-2); }
+.loop-step p { font-size: 13px; }
+
+/* Recipe card */
+.recipe {
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-xl);
+    padding: var(--sp-8);
+    margin-bottom: var(--sp-6);
+}
+.recipe-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-5);
+    padding-bottom: var(--sp-5);
+    border-bottom: 1px solid var(--gray);
+}
+.recipe-title {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    color: var(--navy);
+    line-height: 1.2;
+    margin: 0;
+}
+.recipe-tag {
+    flex-shrink: 0;
+}
+.recipe-section {
+    margin-top: var(--sp-5);
+}
+.recipe-section:first-of-type { margin-top: 0; }
+.recipe-section-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin-bottom: var(--sp-3);
+}
+
+/* Try saying */
+.try-saying {
+    background: var(--gray-lighter);
+    border-left: 4px solid var(--coral);
+    border-radius: var(--r-md);
+    padding: var(--sp-4) var(--sp-5);
+    font-family: var(--font-heading);
+    font-size: 17px;
+    color: var(--navy);
+    line-height: 1.45;
+    font-style: italic;
+    margin: 0 0 var(--sp-3);
+}
+.try-saying::before {
+    content: '“';
+    color: var(--coral);
+    font-size: 28px;
+    line-height: 0;
+    vertical-align: -8px;
+    margin-right: 4px;
+}
+.try-saying::after {
+    content: '”';
+    color: var(--coral);
+    font-size: 28px;
+    line-height: 0;
+    vertical-align: -8px;
+    margin-left: 4px;
+}
+.try-saying + .try-saying { margin-top: var(--sp-3); }
+
+/* Steps inline */
+.steps-inline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: stepi;
+}
+.steps-inline li {
+    counter-increment: stepi;
+    position: relative;
+    padding-left: 36px;
+    margin-top: var(--sp-3);
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.6;
+}
+.steps-inline li:first-child { margin-top: 0; }
+.steps-inline li::before {
+    content: counter(stepi);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--coral);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* You'll need list */
+.youll-need {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+}
+.youll-need li {
+    margin-top: 0;
+    background: var(--gray-light);
+    border: 1px solid var(--gray);
+    border-radius: var(--r-full);
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--slate);
+    line-height: 1.5;
+}
+
+/* Tags */
+.tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: var(--r-full);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    background: var(--gray);
+    color: var(--navy);
+    line-height: 1.4;
+}
+.tag-coral { background: var(--coral); color: var(--white); }
+.tag-navy  { background: var(--navy);  color: var(--white); }
+.tag-teal  { background: var(--turquoise); color: var(--white); }
+.tag-yellow { background: var(--yellow); color: var(--navy); }
+
+/* Callouts */
+.callout {
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-left: 4px solid var(--coral);
+    border-radius: var(--r-md);
+    padding: var(--sp-5) var(--sp-6);
+    margin: var(--sp-6) 0;
+}
+.callout.teal  { border-left-color: var(--turquoise); }
+.callout.navy  { border-left-color: var(--navy); }
+.callout.warn  { border-left-color: var(--yellow); background: #FFFCF1; }
+.callout h4 { margin-bottom: var(--sp-2); }
+.callout p:last-child { margin-bottom: 0; }
+.callout p { font-size: 14px; }
+
+/* Code block */
+pre {
+    background: var(--navy-deep);
+    color: rgba(255,255,255,0.92);
+    padding: var(--sp-5) var(--sp-6);
+    border-radius: var(--r-md);
+    overflow-x: auto;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: var(--sp-5) 0;
+}
+pre code { background: transparent; padding: 0; color: inherit; font-size: inherit; }
+
+/* Phrase table */
+.phrase-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    font-size: 14px;
+}
+.phrase-table th, .phrase-table td {
+    padding: var(--sp-4) var(--sp-5);
+    text-align: left;
+    border-bottom: 1px solid var(--gray);
+    vertical-align: top;
+}
+.phrase-table th {
+    background: var(--gray-lighter);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--navy);
+    font-weight: 700;
+}
+.phrase-table tr:last-child td { border-bottom: none; }
+.phrase-table td { color: var(--slate); line-height: 1.55; }
+.phrase-table .say {
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--navy);
+    width: 50%;
+}
+
+/* Two-col helper */
+.two-col {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--sp-5);
+}
+
+/* Footer */
+.footer {
+    background: var(--navy-deep);
+    color: rgba(255,255,255,0.55);
+    padding: var(--sp-12) 0;
+    font-size: 12px;
+}
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--sp-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-4);
+}
+.footer a { color: rgba(255,255,255,0.85); }
+
+/* Print */
+@media print {
+    .topbar, .hero { background: var(--navy); color: var(--white); }
+    .toc, .footer { display: none; }
+    .section, .section-sm { padding: var(--sp-12) 0; page-break-inside: avoid; }
+    pre, .callout, .recipe { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── Top bar ─── -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <div>
+            <div class="brand-name">MAGNUS</div>
+            <div class="brand-sub">Consulting</div>
+        </div>
+        <div class="topbar-meta">User guide · v1.0</div>
+    </div>
+</div>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+    <div class="container">
+        <span class="eyebrow">User guide</span>
+        <h1>Update the Magnus website. Just by talking to <span class="accent">Claude.</span></h1>
+        <p class="lede">A short guide to using the Magnus admin toolkit. No code. No CMS. You ask Claude — in plain English — to make a change. Claude does the work, shows you a preview, and ships it after you sign off.</p>
+    </div>
+</section>
+
+<!-- ─── TOC ─── -->
+<nav class="toc">
+    <div class="toc-inner">
+        <a href="#setup">Get set up</a>
+        <a href="#loop">How it works</a>
+        <a href="#recipes">Recipes</a>
+        <a href="#approvals">Approvals</a>
+        <a href="#preview">Live preview</a>
+        <a href="#publish">Publishing</a>
+        <a href="#troubleshoot">Troubleshooting</a>
+        <a href="#phrasebook">Phrasebook</a>
+    </div>
+</nav>
+
+<!-- ─── Get set up ─── -->
+<section class="section section-bg-light" id="setup">
+    <div class="container-narrow">
+        <span class="eyebrow">Get set up</span>
+        <h2>One-time install. Three commands.</h2>
+        <p>Open Claude (Desktop, Cowork, or Code) and paste these commands into the chat — one at a time, pressing return after each.</p>
+
+<pre><code>/plugin marketplace add ssu96ld/magnus-claude-plugins
+/plugin install magnus-site
+/reload-plugins</code></pre>
+
+        <p>That's it. Claude now knows how to edit the Magnus site. The first time you ask it to do anything, it'll check whether the website is already on your Mac — if it isn't, it'll offer to clone it for you and run the setup. Say yes.</p>
+
+        <div class="callout teal">
+            <h4>Already done this?</h4>
+            <p>Run <code>/plugin marketplace update magnus-claude-plugins</code> any time to pull the latest version of the toolkit. New skills and improvements arrive that way — no other action needed.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── How it works ─── -->
+<section class="section section-bg-alt" id="loop">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">How it works</span>
+            <h2>The loop is always the same. Four steps.</h2>
+            <p>Whatever you're doing — fixing a typo, adding an article, publishing a new team member — the rhythm is the same.</p>
+        </div>
+
+        <div class="loop">
+            <div class="loop-step">
+                <h4>Ask</h4>
+                <p>Tell Claude what you want, in your own words. "Update the about page", "Add a new article", "Replace the homepage CTA". Claude figures out which skill to use.</p>
+            </div>
+            <div class="loop-step">
+                <h4>Review</h4>
+                <p>Claude shows you what it's about to change — the wording, the page, the file. You read it. If anything's off, you tell Claude and it adjusts. Nothing is saved yet.</p>
+            </div>
+            <div class="loop-step">
+                <h4>Approve</h4>
+                <p>Say "yes" or "go". For sensitive changes — legal pages, client metrics, team bios — Claude will ask you to paste an approval line so the sign-off is recorded.</p>
+            </div>
+            <div class="loop-step">
+                <h4>Publish</h4>
+                <p>Ask Claude to "ship it" or "publish". The change goes onto a branch, opens a PR for one final review, and goes live once that PR is merged.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Recipes ─── -->
+<section class="section section-bg-light" id="recipes">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Recipes</span>
+            <h2>Common things you'll want to do.</h2>
+            <p>Each recipe shows what to say, what Claude will do next, and what you'll need to have ready. Examples are starting points — phrase things naturally, Claude figures out the rest.</p>
+        </div>
+
+        <!-- Edit a page -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Edit something on an existing page</h3>
+                </div>
+                <span class="tag tag-navy recipe-tag">edit</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Fix a typo on /about — "consulutncy" should be "consultancy"</p>
+                <p class="try-saying">Update the headline on the home page to "Sparring partners. Not suppliers."</p>
+                <p class="try-saying">Change the primary CTA on /solutions/embed to point at /contact instead of /book</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <ol class="steps-inline">
+                    <li>Confirm which page you mean and read it.</li>
+                    <li>Show you the exact change as a before/after.</li>
+                    <li>Refuse anything that breaks the design system — new components, raw colours, italic headings — and propose a compliant alternative.</li>
+                    <li>Apply the edit once you say yes, and open the page in your browser so you can check it.</li>
+                </ol>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">You'll need</span>
+                <ul class="youll-need">
+                    <li>The page name or URL</li>
+                    <li>The exact words to change</li>
+                    <li>An approval line if it's a gated page (see below)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Add an article -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Publish a new article on /insights</h3>
+                </div>
+                <span class="tag tag-coral recipe-tag">create</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Add a new article on /insights — title is "Why GTM Is Now an Operating System", category GTM Strategy, by Teresa Allan, 7 min read</p>
+                <p class="try-saying">I have an article draft from Jason Ryan, can you publish it on /insights?</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <ol class="steps-inline">
+                    <li>Ask for the title, lede, body, category, author, and SEO description if you haven't supplied them. You can paste a draft and Claude will pull out what it needs.</li>
+                    <li>Compose the full page using the canonical article template and add the matching card on the /insights index.</li>
+                    <li>Ask you to paste an <strong>approval line</strong> — articles always need a sign-off because they ship under the firm's voice.</li>
+                    <li>Save the page and open it in your browser.</li>
+                </ol>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">You'll need</span>
+                <ul class="youll-need">
+                    <li>Title</li>
+                    <li>Author (TA, DP, JR, or CD)</li>
+                    <li>Category (GTM Strategy, AI in GTM, Private Equity, Sectors)</li>
+                    <li>Body copy</li>
+                    <li>SEO description (~150 chars)</li>
+                    <li>Approval line</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Add a team member -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Add a new team member</h3>
+                </div>
+                <span class="tag tag-coral recipe-tag">create</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Add a new strategist — name is Frank Ocean, here's the approved bio…</p>
+                <p class="try-saying">I've got the bio doc for our new advisor. Can you add them to /team?</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <ol class="steps-inline">
+                    <li>Read the bio you've supplied (paste it in chat or attach the document).</li>
+                    <li>Slot the person into the right group — Partners, Consultants &amp; Strategy, AI Team, Operations &amp; Capability, or Advisors &amp; Associates.</li>
+                    <li>Show you the new entry, ask for the approval line, then save it.</li>
+                    <li>The bio page at <code>/team/&lt;slug&gt;</code> and the matching card on <code>/team</code> appear automatically.</li>
+                </ol>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">You'll need</span>
+                <ul class="youll-need">
+                    <li>Approved bio (2–3 paragraphs)</li>
+                    <li>Role / job title</li>
+                    <li>Tagline (one sentence)</li>
+                    <li>Related solutions and content (or "TBC")</li>
+                    <li>Approval line</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Add a growth story -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Publish a new client growth story</h3>
+                </div>
+                <span class="tag tag-coral recipe-tag">create</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Add a new growth story for DHL — strategic accounts, £290M pipeline in 16 weeks</p>
+                <p class="try-saying">Can you publish the Iron Mountain case study on /impact?</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <ol class="steps-inline">
+                    <li>Ask you for the client name, headline metric, summary, the challenge / approach / outcome sections, and any pull quotes.</li>
+                    <li>Build the page using the standard growth-story template and add the matching card on /impact with the right tags so it shows up in the filter.</li>
+                    <li>Ask for <strong>two approval lines</strong> — one for the story itself, and one specifically for the client metric. Growth stories carry real client numbers, so they're double-gated.</li>
+                </ol>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">You'll need</span>
+                <ul class="youll-need">
+                    <li>Client name and approval to publish</li>
+                    <li>Headline metric (currency, percentage, etc.)</li>
+                    <li>Story copy</li>
+                    <li>Tags (sector, capability)</li>
+                    <li>Two approval lines</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Add a report -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Add a downloadable report</h3>
+                </div>
+                <span class="tag tag-coral recipe-tag">create</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Add the GTM Confidence Index 2026 report to /insights/reports</p>
+                <p class="try-saying">Publish a new whitepaper called "Magnus Growth Report 2026"</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <ol class="steps-inline">
+                    <li>Ask for the title, summary, key findings, gating preference (free vs gated), and the PDF asset if you have one.</li>
+                    <li>Build the report landing page and add the <code>ReportCard</code> entry on /insights/reports.</li>
+                    <li>Ask for the approval line and save.</li>
+                </ol>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">You'll need</span>
+                <ul class="youll-need">
+                    <li>Title and summary</li>
+                    <li>Cover image (optional)</li>
+                    <li>The report PDF (use "Upload a file" first if it isn't on the site yet)</li>
+                    <li>Approval line</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Upload an asset -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Upload a photo or PDF</h3>
+                </div>
+                <span class="tag tag-teal recipe-tag">assets</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Upload a new headshot for Teresa</p>
+                <p class="try-saying">Replace the GTM Confidence Index PDF with the latest version</p>
+                <p class="try-saying">Add the DHL client logo to the homepage carousel</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <ol class="steps-inline">
+                    <li>Ask you to attach the file (drag-drop into chat, or paste a path).</li>
+                    <li>Check it's a supported type (jpg, png, webp, svg, pdf), check the size, and confirm where it should live on the site.</li>
+                    <li>Save it under <code>/public/team/</code>, <code>/public/logos/</code>, <code>/public/reports/</code>, etc., with a sensible filename.</li>
+                    <li>Tell you the path so you can use it in another change. (For team photos, Claude will offer to wire it into the bio entry directly.)</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Preview the site</h3>
+                </div>
+                <span class="tag tag-teal recipe-tag">preview</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Show me the site</p>
+                <p class="try-saying">Preview /team/teresa-allan</p>
+                <p class="try-saying">Stop the preview</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <p>Spin up the live development version of the site on your Mac and either show it inside Claude (Desktop) or open it in your default browser (Cowork). After that, anything you change will appear in the preview within a second or two.</p>
+                <p>Most of the time you don't need to ask for a preview yourself — the edit and create skills do it automatically after they save.</p>
+            </div>
+        </div>
+
+        <!-- Publish -->
+        <div class="recipe">
+            <div class="recipe-head">
+                <div>
+                    <h3 class="recipe-title">Publish your changes</h3>
+                </div>
+                <span class="tag tag-navy recipe-tag">ship</span>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">Try saying</span>
+                <p class="try-saying">Ship it</p>
+                <p class="try-saying">Publish the changes I just made</p>
+                <p class="try-saying">Open a PR for the team page updates</p>
+            </div>
+
+            <div class="recipe-section">
+                <span class="recipe-section-label">What Claude will do</span>
+                <ol class="steps-inline">
+                    <li>Run a quick check that nothing breaks the design system rules.</li>
+                    <li>Run the build to make sure the site still compiles.</li>
+                    <li>Create a branch, commit your changes with all the approval lines you gave inline in the message, and push.</li>
+                    <li>Open a pull request on GitHub for one final review, and hand you the URL.</li>
+                </ol>
+                <p>The site goes live once that PR is merged. Claude never pushes straight to <code>main</code> — that's the safety net.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Approvals ─── -->
+<section class="section section-bg-navy" id="approvals">
+    <div class="container">
+        <div class="section-intro" style="max-width:720px;">
+            <span class="eyebrow" style="color:var(--turquoise);">Approvals</span>
+            <h2>When Claude asks for an approval line.</h2>
+            <p>Some changes are routine — fix a typo, tweak a CTA. They go through. Others affect the firm publicly: legal copy, client numbers, team bios, growth stories. Those are <strong>gated</strong>. Claude will stop and ask you for an approval line before saving anything.</p>
+        </div>
+
+        <div class="two-col">
+            <div>
+                <h3 style="color:var(--white);">What's gated</h3>
+                <ul>
+                    <li>The four legal pages (privacy, terms, cookie, modern slavery)</li>
+                    <li>The homepage hero</li>
+                    <li>Every page under <code>/impact/growth-story/</code></li>
+                    <li>Every new article on <code>/insights</code></li>
+                    <li>Every new team member or bio change</li>
+                    <li>Anywhere that mentions a client name or a real-money figure</li>
+                    <li>Testimonial and pull-quote copy</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color:var(--white);">The exact phrase</h3>
+                <p>Claude will tell you, but it's always this shape:</p>
+<pre><code>approved by &lt;name&gt;</code></pre>
+                <p>For client metrics, you'll be asked for a second line that names the client and metric specifically:</p>
+<pre><code>approved by Teresa Allan for DHL pipeline metric</code></pre>
+                <p>Paste the line in chat. Claude records it in the audit log and continues. The approver's name ends up in the commit message and the PR description, so you can prove sign-off later.</p>
+            </div>
+        </div>
+
+        <div class="callout-dark" style="background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.1); border-left:4px solid var(--coral); border-radius:var(--r-md); padding:var(--sp-5) var(--sp-6); margin-top:var(--sp-10);">
+            <h4 style="color:var(--white); margin-bottom:var(--sp-2);">If you don't have approval yet — stop.</h4>
+            <p style="color:rgba(255,255,255,0.78);">Don't paste an approval line you don't actually have. The toolkit assumes the approver has signed off. If they haven't, get the sign-off in the usual way (Slack, email, in person), then come back and paste the line. Five minutes of friction is the whole point.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Live preview ─── -->
+<section class="section section-bg-light" id="preview">
+    <div class="container-narrow">
+        <span class="eyebrow">Live preview</span>
+        <h2>You'll see your changes in real time.</h2>
+        <p>Whenever you make an edit or add something new, Claude opens the affected page so you can see the result immediately. What that looks like depends on which version of Claude you're using:</p>
+
+        <div class="callout">
+            <h4>In Claude Desktop (solo)</h4>
+            <p>The preview appears in the right-hand pane next to the chat. Edits hot-reload — you don't need to refresh.</p>
+        </div>
+
+        <div class="callout teal">
+            <h4>In Claude Cowork</h4>
+            <p>The preview opens in your normal default browser (Safari, Chrome, whatever you use). Keep the browser tab open and Claude will navigate it to the right page after each edit. If hot reload doesn't pick up a change, just hit refresh.</p>
+        </div>
+
+        <div class="callout">
+            <h4>In Claude Code (terminal)</h4>
+            <p>Same as Cowork — preview opens in your default browser. The chat stays in the terminal, the browser shows the site.</p>
+        </div>
+
+        <p>If you want to preview without making a change, just ask: <em>"show me the site"</em> or <em>"preview /team"</em>. To shut it down: <em>"stop the preview"</em>.</p>
+    </div>
+</section>
+
+<!-- ─── Publishing ─── -->
+<section class="section section-bg-alt" id="publish">
+    <div class="container-narrow">
+        <span class="eyebrow">Publishing</span>
+        <h2>What "ship it" actually does.</h2>
+        <p>When you're happy with a set of changes, ask Claude to <em>"ship it"</em> or <em>"publish"</em>. Here's what happens, step by step:</p>
+
+        <ol class="steps-inline">
+            <li><strong>Validation.</strong> Claude runs the design-system checker. If anything's off — a missing alt tag, a meta description out of bounds — it'll tell you and stop.</li>
+            <li><strong>Build.</strong> Claude runs the production build to make sure the site still compiles cleanly.</li>
+            <li><strong>Branch.</strong> A new branch is created off <code>main</code> (something like <code>change/team-update-260501</code>). Your changes are committed onto that branch, with every approval line you gave embedded in the commit message.</li>
+            <li><strong>Pull request.</strong> Claude opens a PR on GitHub and gives you the URL. The PR description lists every change and every approver — clear audit trail.</li>
+            <li><strong>Merge.</strong> A reviewer (developer or partner) opens the PR, reviews it, and merges it. The deploy fires automatically when the merge lands.</li>
+        </ol>
+
+        <div class="callout warn">
+            <h4>Why a PR and not a direct push?</h4>
+            <p>It's the safety net. The toolkit tries hard to stop bad changes, but a second pair of eyes is cheap insurance against the cases nobody anticipated. The PR review is the last gate before the change is live.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Troubleshooting ─── -->
+<section class="section section-bg-light" id="troubleshoot">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Troubleshooting</span>
+            <h2>If something goes sideways.</h2>
+            <p>Most issues are one of these. Try the fix; if it still doesn't work, ask the build team.</p>
+        </div>
+
+        <div class="two-col">
+            <div class="callout">
+                <h4>"This folder isn't the magnus repo."</h4>
+                <p>Claude is in the wrong directory. Say <em>"run magnus-setup"</em> and follow the prompts. It'll either find your existing copy or clone a fresh one.</p>
+            </div>
+
+            <div class="callout">
+                <h4>"That change introduces a new component."</h4>
+                <p>You're asking Claude to do something the design system doesn't cover. Either rephrase using a documented component (Claude will suggest the closest one) or send the request to the build team — adding new components is a developer change.</p>
+            </div>
+
+            <div class="callout">
+                <h4>"That meta description is too short / too long."</h4>
+                <p>SEO descriptions need to be 120–155 characters. Claude will offer a tightened version — accept it, or send it back with your own wording.</p>
+            </div>
+
+            <div class="callout">
+                <h4>"The slug already exists."</h4>
+                <p>You're trying to create something with the same URL slug as an existing page. Pick a different slug, or if you meant to update the existing page, tell Claude to <em>"edit it instead"</em>.</p>
+            </div>
+
+            <div class="callout">
+                <h4>"The dev server didn't start."</h4>
+                <p>Usually means another tool is already using the port. Quit any other site previews and ask Claude to <em>"restart the preview"</em>.</p>
+            </div>
+
+            <div class="callout warn">
+                <h4>You changed your mind after Claude saved.</h4>
+                <p>Tell Claude to <em>"undo the last change"</em> or <em>"revert the team edit"</em>. As long as you haven't published yet, the change is local and easy to roll back. If you've already published, the build team can revert the PR.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Phrasebook ─── -->
+<section class="section section-bg-alt" id="phrasebook">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Phrasebook</span>
+            <h2>Quick reference.</h2>
+            <p>Phrases that work. Phrase things naturally — these are starting points, not magic words.</p>
+        </div>
+
+        <table class="phrase-table">
+            <thead>
+                <tr>
+                    <th style="width:50%;">Say something like…</th>
+                    <th>… to do this</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="say">"Fix the typo on /about — 'consulutncy' should be 'consultancy'"</td>
+                    <td>Edit a page</td>
+                </tr>
+                <tr>
+                    <td class="say">"Update the headline on the home page to …"</td>
+                    <td>Edit a page</td>
+                </tr>
+                <tr>
+                    <td class="say">"Change the meta description on /solutions/embed to …"</td>
+                    <td>Edit a page (SEO)</td>
+                </tr>
+                <tr>
+                    <td class="say">"Add a new article on /insights — title is …"</td>
+                    <td>Create an insights article</td>
+                </tr>
+                <tr>
+                    <td class="say">"Publish a new growth story for [client]"</td>
+                    <td>Create a case study</td>
+                </tr>
+                <tr>
+                    <td class="say">"Add the GTM Confidence Index 2026 report to /insights/reports"</td>
+                    <td>Create a report</td>
+                </tr>
+                <tr>
+                    <td class="say">"Add a new team member — here's the bio…"</td>
+                    <td>Create a team profile</td>
+                </tr>
+                <tr>
+                    <td class="say">"Upload a new headshot for [name]"</td>
+                    <td>Upload a photo</td>
+                </tr>
+                <tr>
+                    <td class="say">"Replace the report PDF with the latest version"</td>
+                    <td>Replace a file</td>
+                </tr>
+                <tr>
+                    <td class="say">"Show me the site" / "Preview /team/teresa-allan"</td>
+                    <td>Open the live preview</td>
+                </tr>
+                <tr>
+                    <td class="say">"Stop the preview"</td>
+                    <td>Shut down the dev server</td>
+                </tr>
+                <tr>
+                    <td class="say">"Approved by [name]"</td>
+                    <td>Sign off on a gated change</td>
+                </tr>
+                <tr>
+                    <td class="say">"Ship it" / "Publish the changes I just made"</td>
+                    <td>Open a PR for review</td>
+                </tr>
+                <tr>
+                    <td class="say">"Undo the last change"</td>
+                    <td>Roll back an unpublished change</td>
+                </tr>
+                <tr>
+                    <td class="say">"Run magnus-setup"</td>
+                    <td>Clone or locate the website on your Mac</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>Magnus Site Admin Toolkit · User guide · v1.0</div>
+        <div>Source: <a href="https://github.com/ssu96ld/magnus-claude-plugins">github.com/ssu96ld/magnus-claude-plugins</a></div>
+    </div>
+</footer>
+
+</body>
+</html>

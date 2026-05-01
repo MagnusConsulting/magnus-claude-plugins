@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnus Site Admin Toolkit — Manager Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --coral:           #F55D4B;
+    --coral-dark:      #DB5344;
+    --navy:            #2C3E50;
+    --navy-dark:       #1F3038;
+    --navy-deep:       #162930;
+    --turquoise:       #009FAC;
+    --turquoise-dark:  #00808A;
+    --yellow:          #FFBE3B;
+    --slate:           #516572;
+    --slate-light:     #7A8894;
+    --gray:            #E8EAED;
+    --gray-light:      #F5F6F7;
+    --gray-lighter:    #FAFBFC;
+    --white:           #FFFFFF;
+
+    --font-heading: 'Libre Baskerville', Georgia, serif;
+    --font-body:    'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
+    --sp-5: 1.25rem; --sp-6: 1.5rem; --sp-7: 1.75rem; --sp-8: 2rem;
+    --sp-10: 2.5rem; --sp-12: 3rem; --sp-16: 4rem; --sp-20: 5rem;
+    --sp-24: 6rem; --sp-32: 8rem;
+
+    --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-full: 9999px;
+
+    --t: 0.2s ease;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-body);
+    color: var(--navy);
+    background: var(--white);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--coral); text-decoration: none; transition: color var(--t); }
+a:hover { color: var(--coral-dark); }
+
+h1, h2 { font-family: var(--font-heading); color: var(--navy); line-height: 1.15; font-weight: 700; }
+h3, h4, h5, h6 { font-family: var(--font-body); color: var(--navy); font-weight: 600; line-height: 1.3; }
+h1 { font-size: clamp(36px, 5vw, 56px); margin: 0 0 var(--sp-6); }
+h2 { font-size: clamp(28px, 3.5vw, 38px); margin: 0 0 var(--sp-6); }
+h3 { font-size: clamp(18px, 2vw, 22px); margin: 0 0 var(--sp-4); }
+h4 { font-size: 16px; margin: 0 0 var(--sp-3); }
+
+p  { margin: 0 0 var(--sp-4); color: var(--slate); font-size: 15px; line-height: 1.75; }
+p:last-child { margin-bottom: 0; }
+
+ul, ol { color: var(--slate); font-size: 15px; line-height: 1.75; }
+li + li { margin-top: var(--sp-2); }
+
+strong { color: var(--navy); font-weight: 600; }
+
+code, kbd {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--gray-light);
+    padding: 1px 6px;
+    border-radius: var(--r-sm);
+    color: var(--navy);
+}
+
+.container        { max-width: 1180px; margin: 0 auto; padding: 0 var(--sp-8); }
+.container-narrow { max-width: 820px;  margin: 0 auto; padding: 0 var(--sp-8); }
+
+.section          { padding: var(--sp-20) 0; }
+.section-sm       { padding: var(--sp-12) 0; }
+.section-bg-light { background: var(--white); }
+.section-bg-alt   { background: var(--gray-lighter); }
+.section-bg-navy  { background: var(--navy); color: var(--white); }
+.section-bg-navy h2, .section-bg-navy h3, .section-bg-navy h4 { color: var(--white); }
+.section-bg-navy p, .section-bg-navy li { color: rgba(255,255,255,0.78); }
+.section-bg-navy strong { color: var(--white); }
+
+.eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: var(--sp-3);
+}
+.eyebrow.teal { color: var(--turquoise); }
+
+.accent { color: var(--coral); }
+
+.intro-rule {
+    width: 48px;
+    height: 2px;
+    background: var(--coral);
+    margin: var(--sp-3) 0 var(--sp-6);
+}
+
+/* Top bar / nav */
+.topbar {
+    background: linear-gradient(to right, var(--navy) 0%, var(--navy-dark) 100%);
+    padding: var(--sp-4) 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.topbar-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 var(--sp-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--white);
+}
+.brand {
+    line-height: 1;
+}
+.brand-name {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--coral);
+    letter-spacing: 0.5px;
+}
+.brand-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+.topbar-meta {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+}
+
+/* Hero */
+.hero {
+    background:
+        radial-gradient(ellipse at top right, rgba(245,93,75,0.12) 0%, transparent 60%),
+        linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+    color: var(--white);
+    padding: var(--sp-24) 0 var(--sp-20);
+}
+.hero h1 { color: var(--white); max-width: 840px; }
+.hero p.lede {
+    color: rgba(255,255,255,0.78);
+    font-size: 18px;
+    line-height: 1.7;
+    max-width: 720px;
+    margin: var(--sp-6) 0 var(--sp-10);
+}
+.hero-meta {
+    display: flex;
+    gap: var(--sp-8);
+    flex-wrap: wrap;
+    padding-top: var(--sp-6);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    max-width: 720px;
+}
+.hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.hero-meta-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+}
+.hero-meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+}
+
+/* Section intro */
+.section-intro {
+    max-width: 720px;
+    margin-bottom: var(--sp-12);
+}
+
+/* Cards */
+.card-grid {
+    display: grid;
+    gap: var(--sp-5);
+}
+.card-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.card-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card-grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+.card {
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-xl);
+    padding: var(--sp-7);
+    transition: border-color var(--t), transform var(--t);
+}
+.card.coral { border-top: 3px solid var(--coral); }
+.card.teal  { border-top: 3px solid var(--turquoise); }
+.card.navy  { border-top: 3px solid var(--navy); }
+.card-num {
+    font-family: var(--font-heading);
+    font-size: 32px;
+    color: var(--coral);
+    line-height: 1;
+    margin-bottom: var(--sp-3);
+}
+.card h4 { margin-bottom: var(--sp-2); }
+.card p { font-size: 14px; }
+
+/* Stat strip */
+.stat-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--sp-5);
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-xl);
+    padding: var(--sp-8);
+    margin: 0 auto;
+    max-width: 1100px;
+}
+.stat-strip-item { padding: 0 var(--sp-2); }
+.stat-strip-num {
+    font-family: var(--font-heading);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--coral);
+    line-height: 1;
+    margin-bottom: var(--sp-2);
+}
+.stat-strip-label {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.55;
+}
+
+/* Tables */
+.table-wrap {
+    overflow-x: auto;
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-lg);
+    background: var(--white);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+th, td {
+    text-align: left;
+    padding: var(--sp-4) var(--sp-5);
+    border-bottom: 1px solid var(--gray);
+    vertical-align: top;
+}
+th {
+    background: var(--gray-lighter);
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+tr:last-child td { border-bottom: none; }
+td { color: var(--slate); line-height: 1.6; }
+td code { font-size: 12px; }
+td strong { color: var(--navy); }
+
+/* Tags */
+.tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: var(--r-full);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    background: var(--gray);
+    color: var(--navy);
+    line-height: 1.4;
+}
+.tag-coral { background: var(--coral); color: var(--white); }
+.tag-navy  { background: var(--navy);  color: var(--white); }
+.tag-teal  { background: var(--turquoise); color: var(--white); }
+.tag-yellow { background: var(--yellow); color: var(--navy); }
+.tag-outline {
+    background: transparent;
+    border: 1.5px solid var(--gray);
+    color: var(--slate);
+}
+
+/* Callouts */
+.callout {
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-left: 4px solid var(--coral);
+    border-radius: var(--r-md);
+    padding: var(--sp-6) var(--sp-7);
+    margin: var(--sp-6) 0;
+}
+.callout.teal  { border-left-color: var(--turquoise); }
+.callout.navy  { border-left-color: var(--navy); }
+.callout.warn  { border-left-color: var(--yellow); background: #FFFCF1; }
+.callout h4 { margin-bottom: var(--sp-2); }
+.callout p:last-child { margin-bottom: 0; }
+.callout-dark {
+    background: var(--navy);
+    border: 1.5px solid var(--navy-dark);
+    border-left: 4px solid var(--coral);
+    border-radius: var(--r-md);
+    padding: var(--sp-6) var(--sp-7);
+    color: rgba(255,255,255,0.78);
+    margin: var(--sp-6) 0;
+}
+.callout-dark h4 { color: var(--white); }
+.callout-dark p { color: rgba(255,255,255,0.78); }
+
+/* Code blocks */
+pre {
+    background: var(--navy-deep);
+    color: rgba(255,255,255,0.92);
+    padding: var(--sp-5) var(--sp-6);
+    border-radius: var(--r-md);
+    overflow-x: auto;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: var(--sp-5) 0;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+/* Architecture diagram */
+.arch {
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-xl);
+    padding: var(--sp-8);
+    display: grid;
+    gap: var(--sp-5);
+    margin: var(--sp-8) 0;
+}
+.arch-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--sp-5);
+    align-items: stretch;
+}
+.arch-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    padding-top: var(--sp-3);
+}
+.arch-content {
+    background: var(--gray-lighter);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-md);
+    padding: var(--sp-5) var(--sp-6);
+}
+.arch-content h4 { margin-bottom: var(--sp-2); color: var(--navy); }
+.arch-content p { font-size: 13px; margin-bottom: var(--sp-2); }
+.arch-content code { font-size: 12px; }
+.arch-content.coral { border-left: 4px solid var(--coral); }
+.arch-content.teal  { border-left: 4px solid var(--turquoise); }
+.arch-content.navy  { border-left: 4px solid var(--navy); }
+
+/* Cascade */
+.cascade {
+    counter-reset: cascade;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--sp-4);
+}
+.cascade li {
+    counter-increment: cascade;
+    position: relative;
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-md);
+    padding: var(--sp-5) var(--sp-6) var(--sp-5) var(--sp-12);
+    margin-top: 0;
+}
+.cascade li::before {
+    content: counter(cascade);
+    position: absolute;
+    left: var(--sp-5);
+    top: var(--sp-5);
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--coral);
+    line-height: 1;
+}
+.cascade li h4 {
+    margin: 0 0 var(--sp-2);
+    font-size: 14px;
+}
+.cascade li p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+/* Footer */
+.footer {
+    background: var(--navy-deep);
+    color: rgba(255,255,255,0.55);
+    padding: var(--sp-12) 0;
+    font-size: 12px;
+}
+.footer-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 var(--sp-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-4);
+}
+.footer a { color: rgba(255,255,255,0.85); }
+
+/* Print */
+@media print {
+    .topbar { background: var(--navy); color: var(--white); }
+    .hero   { background: var(--navy); color: var(--white); }
+    .section, .section-sm { padding: var(--sp-12) 0; page-break-inside: avoid; }
+    pre, .callout, .arch, .table-wrap { page-break-inside: avoid; }
+    a { color: var(--coral); text-decoration: underline; }
+}
+
+@media (max-width: 720px) {
+    .arch-row { grid-template-columns: 1fr; gap: var(--sp-2); }
+    .arch-label { padding-top: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── Top bar ─── -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <div class="brand-name">MAGNUS</div>
+            <div class="brand-sub">Consulting</div>
+        </div>
+        <div class="topbar-meta">Internal handover · v0.8.0</div>
+    </div>
+</div>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+    <div class="container">
+        <span class="eyebrow" style="color:var(--coral);">Manager overview</span>
+        <h1>The Magnus site admin toolkit. <span class="accent">Built on Claude.</span></h1>
+        <p class="lede">A plugin for Claude that lets non-technical Magnus administrators safely create and edit pages on the magnusconsulting.co.uk Astro website — without breaking the design system, the brand voice, or the content sign-off rules.</p>
+
+        <div class="hero-meta">
+            <div class="hero-meta-item">
+                <span class="hero-meta-label">Audience</span>
+                <span class="hero-meta-value">Project Manager</span>
+            </div>
+            <div class="hero-meta-item">
+                <span class="hero-meta-label">Plugin version</span>
+                <span class="hero-meta-value">0.8.0</span>
+            </div>
+            <div class="hero-meta-item">
+                <span class="hero-meta-label">Marketplace</span>
+                <span class="hero-meta-value">ssu96ld/magnus-claude-plugins</span>
+            </div>
+            <div class="hero-meta-item">
+                <span class="hero-meta-label">Scope</span>
+                <span class="hero-meta-value">Architecture · skills · governance · roadmap</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── At a glance ─── -->
+<section class="section section-bg-alt">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">At a glance</span>
+            <h2>What this is, in four numbers.</h2>
+            <p>The full toolkit in one screen. Each number is expanded in the sections below.</p>
+        </div>
+
+        <div class="stat-strip">
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">5</div>
+                <div class="stat-strip-label">skills shipped — setup, edit, add insight, add team member, preview. One more (publish) to close the loop.</div>
+            </div>
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">2</div>
+                <div class="stat-strip-label">repositories — the website itself and a separate plugin marketplace, with a single contract document linking them.</div>
+            </div>
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">3</div>
+                <div class="stat-strip-label">preview paths — Claude Desktop pane, the bundled local helper for Cowork, the system browser as a universal fallback.</div>
+            </div>
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">100%</div>
+                <div class="stat-strip-label">of changes to gated paths or client metrics require an explicit approval line in chat, recorded in the audit log.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Why this exists ─── -->
+<section class="section section-bg-light">
+    <div class="container-narrow">
+        <span class="eyebrow">Why this exists</span>
+        <h2>The problem we set out to solve.</h2>
+        <p>The Magnus site is built in Astro — fast, well-engineered, and componentised against a documented design system. That gives developers everything they need. It does not, on its own, give Magnus's non-technical administrators a way to make small content edits without breaking the system.</p>
+
+        <p>Without a tool, every routine update — a typo on a service page, a tweak to a CTA, a new article on <code>/insights</code>, a new team member — needs a developer. That has three consequences worth naming:</p>
+
+        <div class="callout">
+            <h4>1 · Design system drift</h4>
+            <p>An admin given direct access to the codebase can paste a hex value, an italic emphasis, or a one-off card style. Each instance is small. Over a year, the design system fragments and the brand starts to look inconsistent.</p>
+        </div>
+
+        <div class="callout">
+            <h4>2 · Brand voice loss</h4>
+            <p>Magnus copy is direct, evidence-led, short-sentence. Without rails, copy edits drift toward soft consultancy language — "synergies", "value-add", "solutions landscape" — that the firm has explicitly distanced itself from.</p>
+        </div>
+
+        <div class="callout warn">
+            <h4>3 · Risk on legal pages and client metrics</h4>
+            <p>The privacy policy, terms, and client growth-story metrics aren't routine admin edits. Changing a pipeline figure on a case study without partner sign-off is a real exposure. Without a system, there's no enforced check.</p>
+        </div>
+
+        <p>The toolkit replaces a CMS-shaped problem with a Claude-shaped solution: the admin describes what they want; Claude makes the change inside hard rails; the rails refuse anything that breaks the design system, the brand voice, or the approval rules.</p>
+    </div>
+</section>
+
+<!-- ─── How it fits together ─── -->
+<section class="section section-bg-alt">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Architecture</span>
+            <h2>How it fits together.</h2>
+            <p>Six pieces. Two repos, one contract document, a bundled MCP helper, an audit log, and a plugin marketplace that distributes the lot.</p>
+        </div>
+
+        <div class="arch">
+            <div class="arch-row">
+                <div class="arch-label">Layer 1 · Site</div>
+                <div class="arch-content navy">
+                    <h4>magnusconsulting-co-uk</h4>
+                    <p>The Astro website itself. Private GitHub repo. <code>git push</code> to <code>main</code> triggers the deploy webhook. This is the only repo where production code lives.</p>
+                </div>
+            </div>
+
+            <div class="arch-row">
+                <div class="arch-label">Layer 2 · Contract</div>
+                <div class="arch-content coral">
+                    <h4>docs/llm-context.md</h4>
+                    <p>A single document inside the website repo that defines the design system, component library, page templates, brand voice rules, and the team-member data shape. Every skill reads this document first as its source of truth — if it's missing, the skills refuse to act. This is the contract between the website and the toolkit.</p>
+                </div>
+            </div>
+
+            <div class="arch-row">
+                <div class="arch-label">Layer 3 · Plugin</div>
+                <div class="arch-content teal">
+                    <h4>magnus-claude-plugins</h4>
+                    <p>A separate private GitHub repo configured as a Claude marketplace. Contains the <code>magnus-site</code> plugin — a bundle of skills (admin-facing actions Claude can perform) plus a small local MCP helper. Versioned independently of the website. Distributed to admins via <code>/plugin marketplace add</code>.</p>
+                </div>
+            </div>
+
+            <div class="arch-row">
+                <div class="arch-label">Layer 4 · Helper</div>
+                <div class="arch-content teal">
+                    <h4>magnus-helper (bundled MCP)</h4>
+                    <p>A small Node script the plugin ships and auto-starts on enable. Runs on the admin's Mac (not in any sandbox) so Claude can start <code>npm run dev</code>, open URLs in the default browser, and bridge into Claude Cowork — where the standard Bash environment is sandbox-isolated.</p>
+                </div>
+            </div>
+
+            <div class="arch-row">
+                <div class="arch-label">Layer 5 · Audit</div>
+                <div class="arch-content coral">
+                    <h4>.magnus-changes/pending.log</h4>
+                    <p>A small log file inside the website repo, gitignored from production but read by the publish skill. Every gated change appends one line: timestamp, file path, summary, approver. The publish skill copies these into the commit message and PR body, then truncates the log.</p>
+                </div>
+            </div>
+
+            <div class="arch-row">
+                <div class="arch-label">Layer 6 · Distribution</div>
+                <div class="arch-content navy">
+                    <h4>Marketplace install</h4>
+                    <p>An admin runs two commands once: <code>/plugin marketplace add ssu96ld/magnus-claude-plugins</code> then <code>/plugin install magnus-site</code>. Updates propagate via <code>/plugin marketplace update</code> — or automatically on session start. No other setup.</p>
+                </div>
+            </div>
+        </div>
+
+        <p style="max-width:820px;">Why two repos and not one? The website is a public-facing artefact with its own deploy pipeline, owned by the build team. The plugin is internal tooling that evolves on a different cadence. Keeping them separate means changes to the toolkit never accidentally land on the production website, and a new toolkit version can ship without touching the site.</p>
+    </div>
+</section>
+
+<!-- ─── The skills ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">The skills</span>
+            <h2>What an admin can actually do.</h2>
+            <p>Five skills today, each scoped to one well-defined admin action. Skills are triggered by natural-language requests — the admin doesn't memorise commands.</p>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:200px;">Skill</th>
+                        <th>What it does</th>
+                        <th style="width:160px;">Files it touches</th>
+                        <th style="width:130px;">Gate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>magnus-setup</strong><br><span class="tag tag-outline">bootstrap</span></td>
+                        <td>Detects whether the admin is in the Magnus website folder. If not, offers to clone the repo from GitHub, run <code>npm install</code>, and tell the admin where the resulting folder lives. Every other skill prompts to run this if the website repo isn't present.</td>
+                        <td><code>./magnusconsulting-co-uk/</code> (cloned)</td>
+                        <td><span class="tag tag-outline">none</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>magnus-edit-page</strong><br><span class="tag tag-outline">edit</span></td>
+                        <td>Edits copy, headings, CTAs, SEO metadata, or component props on an existing page. Refuses any change that introduces a new component, a raw colour, italic headings, or off-system spacing. Auto-navigates the live preview to the edited page.</td>
+                        <td>Pages under <code>src/pages/</code></td>
+                        <td><span class="tag tag-coral">conditional</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>magnus-add-insight-article</strong><br><span class="tag tag-outline">create</span></td>
+                        <td>Creates a new article under <code>/insights/&lt;slug&gt;</code> using the canonical template, then inserts a matching <code>ArticleCard</code> at the top of the <code>/insights</code> grid with the right category, dataTags, and author colour.</td>
+                        <td><code>src/pages/insights/</code></td>
+                        <td><span class="tag tag-coral">always</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>magnus-add-team-member</strong><br><span class="tag tag-outline">create</span></td>
+                        <td>Appends a typed entry to <code>src/data/team.ts</code>. The dynamic route at <code>/team/[slug]</code> auto-generates the bio page; the team index surfaces the matching card. The skill never edits any <code>.astro</code> file.</td>
+                        <td><code>src/data/team.ts</code></td>
+                        <td><span class="tag tag-coral">always</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>magnus-preview</strong><br><span class="tag tag-outline">preview</span></td>
+                        <td>Starts, navigates, or stops the local Astro dev server. Picks the right mechanism for the current Claude environment (preview pane, helper-driven browser, terminal Bash). Other skills call this hook automatically after applying changes.</td>
+                        <td>none (read-only)</td>
+                        <td><span class="tag tag-outline">none</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p style="margin-top:var(--sp-8);">Each skill is defined as one Markdown file inside the plugin. The file specifies what the skill does, what it refuses to do, what approval it requires, and how it hands off to the next step in the workflow. Skills are easy to read and review — they aren't code so much as documented procedures.</p>
+    </div>
+</section>
+
+<!-- ─── Approval & audit ─── -->
+<section class="section section-bg-navy">
+    <div class="container">
+        <div class="section-intro" style="max-width:760px;">
+            <span class="eyebrow" style="color:var(--turquoise);">Governance</span>
+            <h2>Approval and audit are built in. Not bolted on.</h2>
+            <p>The toolkit treats Magnus content as governed material. Some changes ship freely. Some require an explicit approval line in chat. Some never ship without partner sign-off. The boundaries are documented inside each skill — admins can't bypass them by phrasing things differently.</p>
+        </div>
+
+        <div class="card-grid cols-3" style="margin-top:var(--sp-12);">
+            <div class="callout-dark">
+                <h4>Routine edits — flow</h4>
+                <p>A typo on <code>/about</code>, a CTA label change on a service page, a meta description tweak. Apply directly. No gate. Auditable in git history if anyone needs to look.</p>
+            </div>
+            <div class="callout-dark">
+                <h4>Path-gated edits — sign-off required</h4>
+                <p>Legal pages (<code>privacy-policy</code>, <code>terms-and-conditions</code>, <code>cookie-policy</code>, <code>modern-slavery-policy</code>), the homepage hero, and any growth story under <code>/impact/growth-story/</code>. The skill stops, asks for <code>approved by &lt;name&gt;</code>, records the approval in the audit log.</p>
+            </div>
+            <div class="callout-dark">
+                <h4>Content-gated edits — always</h4>
+                <p>Client metrics, real-money figures, percentages tied to a client name, client names in quotes, testimonial copy. Gated wherever they appear, on any page. Same approval mechanism, plus a second explicit line for the metric itself.</p>
+            </div>
+        </div>
+
+        <h3 style="margin-top:var(--sp-16); color:var(--white);">The audit log</h3>
+        <p style="max-width:720px;">Every gated change appends one line to <code>.magnus-changes/pending.log</code> in the website repo. The format is fixed:</p>
+
+<pre><code>2026-04-30T15:21:10Z | src/pages/impact/growth-story/dhl/strategic-accounts.astro | Update DHL pipeline metric from £270M to £290M | approved by Teresa Allan</code></pre>
+
+        <p>The publish skill (when it lands) reads this log, copies every line into the commit message and PR description, and truncates the log file. The result is a clean audit trail: every gated change in the website's git history carries the name of the person who signed it off, and the corresponding PR carries the same record.</p>
+
+        <h3 style="margin-top:var(--sp-12); color:var(--white);">What the gate doesn't replace</h3>
+        <p style="max-width:720px;">The in-skill gate is a process check — it forces the admin to assert sign-off, and records the assertion. It doesn't replace partner judgement. The right way to think about it: the gate is the same friction as a "check before you commit" prompt, made auditable. Real review still happens via PR (planned in <code>magnus-publish</code>) and via the partners themselves before the admin opens the chat.</p>
+    </div>
+</section>
+
+<!-- ─── Live preview ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Live preview</span>
+            <h2>Three paths. Picked automatically.</h2>
+            <p>Different Claude environments expose different capabilities. Cowork runs Claude in a remote Linux sandbox; solo Claude Desktop runs it on the user's machine; Claude Code in a terminal runs it as a local CLI. The preview skill picks whichever path the current session supports.</p>
+        </div>
+
+        <ol class="cascade">
+            <li>
+                <h4>Path A · Claude Desktop preview pane</h4>
+                <p>If the <code>Claude_Preview</code> MCP is wired (solo Desktop or Claude Code with the MCP installed), the dev server runs and renders inside the right-hand preview pane. Astro hot module reloading keeps it in sync with edits.</p>
+            </li>
+            <li>
+                <h4>Path B · magnus-helper bridge (Cowork)</h4>
+                <p>If the Claude_Preview MCP isn't available — typical of Cowork — the bundled <code>magnus-helper</code> MCP takes over. It runs on the admin's Mac (outside the sandbox), starts <code>npm run dev</code>, and opens the URL in the admin's default browser. Claude can navigate the browser by calling MCP tools through the user's account.</p>
+            </li>
+            <li>
+                <h4>Path C · System browser fallback (terminal)</h4>
+                <p>If neither MCP is available — Claude Code in a plain terminal session — the skill falls back to running <code>npm run dev</code> via Bash and opening the URL with <code>open</code>. Same outcome, different mechanism.</p>
+            </li>
+        </ol>
+
+        <div class="callout teal">
+            <h4>Why a cascade and not a single path?</h4>
+            <p>Each environment has hard constraints. Cowork's sandbox can't reach the admin's local network, so the standard Bash fallback can't open <code>localhost:4321</code> on the Mac. Solo Desktop has no need for the helper. Claude Code in a terminal doesn't have the Cowork bridge. The cascade means an admin gets a working preview in every environment without thinking about which one they're in.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Operating model ─── -->
+<section class="section section-bg-alt">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Operating model</span>
+            <h2>Who maintains what, and how updates flow.</h2>
+            <p>Three things change at different rates. The toolkit's structure mirrors that.</p>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Owner</th>
+                        <th>Cadence</th>
+                        <th>How updates propagate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Website code</strong><br><code>magnusconsulting-co-uk</code></td>
+                        <td>Build team / developer</td>
+                        <td>Per feature</td>
+                        <td><code>git push</code> to <code>main</code> triggers the deploy webhook. New components and pages land here.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Design contract</strong><br><code>docs/llm-context.md</code></td>
+                        <td>Build team, with sign-off from Magnus</td>
+                        <td>When the design system changes</td>
+                        <td>Updated in the website repo as part of any feature that adds a component, a token, or a page template. The plugin reads it on every skill invocation — no separate update needed.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plugin code</strong><br><code>magnus-claude-plugins</code></td>
+                        <td>Build team</td>
+                        <td>Independent</td>
+                        <td>New skill or skill change → push to plugin repo → admins run <code>/plugin marketplace update magnus-claude-plugins</code> in any Claude session.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Site content</strong><br>pages, articles, team bios, growth stories</td>
+                        <td>Magnus admins, with partner sign-off where gated</td>
+                        <td>Continuous</td>
+                        <td>Admin uses skills → audit log captures approval → publish skill (planned) commits to a branch and opens a PR → reviewer merges → deploy fires.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 style="margin-top:var(--sp-12);">Installing the toolkit on a new Mac</h3>
+        <p>The admin runs three commands once. There is no other setup.</p>
+
+<pre><code>/plugin marketplace add ssu96ld/magnus-claude-plugins
+/plugin install magnus-site
+/reload-plugins</code></pre>
+
+        <p>From that point, the admin can ask Claude — in plain English — to edit a page, add an article, add a team member, or preview the site. The skills handle the rest. The first time a skill runs, <code>magnus-setup</code> kicks in if the website repo isn't already on disk.</p>
+    </div>
+</section>
+
+<!-- ─── Trust boundaries ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Trust boundaries</span>
+            <h2>What the toolkit will refuse. And what still needs a human.</h2>
+            <p>The skills are deliberately narrow. Anything outside scope gets refused with a redirect to the right skill or to the developer.</p>
+        </div>
+
+        <div class="card-grid cols-2">
+            <div class="card coral">
+                <h4>Hard refusals</h4>
+                <ul>
+                    <li>New components not documented in <code>llm-context.md</code></li>
+                    <li>Raw hex values or pixel sizes (must use design tokens)</li>
+                    <li>Italic emphasis inside any <code>&lt;h1&gt;</code>–<code>&lt;h3&gt;</code></li>
+                    <li>Inline scripts, <code>onclick</code> handlers, third-party embeds</li>
+                    <li>Italics or markdown inside team bios or article body</li>
+                    <li>Edits to legal pages without an approval line</li>
+                    <li>Client metrics or names in quotes without an approval line</li>
+                    <li>Slug collisions on insights or team additions</li>
+                </ul>
+            </div>
+            <div class="card teal">
+                <h4>Still requires a human</h4>
+                <ul>
+                    <li>Photo and asset uploads — the toolkit doesn't yet handle binary files</li>
+                    <li>Adding new components or design tokens — a developer change to the website repo and contract</li>
+                    <li>The actual content sign-off from partners or the bio's subject before the admin asserts approval</li>
+                    <li>PR review and merge to <code>main</code> — branch-protected, deploy-gating</li>
+                    <li>Adding new skills or capabilities to the plugin — a developer change to the marketplace repo</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="callout warn">
+            <h4>The trust model in one sentence</h4>
+            <p>The toolkit makes routine edits safe and gated edits auditable. It does not make Magnus's content <em>review</em> automatic — partners still own what ships, the toolkit just makes it harder to ship something they shouldn't.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Roadmap ─── -->
+<section class="section section-bg-alt">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Roadmap</span>
+            <h2>What's built. What's next. What's deferred.</h2>
+            <p>The toolkit is shipped at v0.8.0 — the editing and content-creation loops are live, the preview cascade is working, and the audit log captures every gated change. One skill closes the publish loop; a second handles binary assets. After that, two more content-creation skills round out the inventory.</p>
+        </div>
+
+        <h3>Built (v0.1.0 → v0.8.0)</h3>
+        <ul>
+            <li><strong>magnus-setup</strong> — bootstrap the website repo on a new Mac.</li>
+            <li><strong>magnus-edit-page</strong> — edit existing pages with full guardrails.</li>
+            <li><strong>magnus-add-insight-article</strong> — create new articles in <code>/insights</code>.</li>
+            <li><strong>magnus-add-team-member</strong> — append entries to <code>src/data/team.ts</code> for the dynamic team profile pages.</li>
+            <li><strong>magnus-preview</strong> — three-path preview cascade.</li>
+            <li><strong>magnus-helper</strong> — bundled local MCP that bridges into Cowork.</li>
+        </ul>
+
+        <h3 style="margin-top:var(--sp-10);">Next (next iteration)</h3>
+        <ul>
+            <li><strong>magnus-publish</strong> — closes the loop. Validates against the design contract, branches off <code>main</code>, builds, commits with the audit log embedded in the message, opens a PR, and hands the URL back. Branch protection on <code>main</code> ensures no admin can push directly.</li>
+            <li><strong>magnus-manage-assets</strong> — handles photo and document uploads to the website's <code>public/</code> directory. Required for the team profile pages to show real photos rather than placeholders.</li>
+        </ul>
+
+        <h3 style="margin-top:var(--sp-10);">Deferred (when needed)</h3>
+        <ul>
+            <li><strong>magnus-add-growth-story</strong> — large surface area, needs a careful pass over the <code>GrowthStoryLayout</code> data shape.</li>
+            <li><strong>magnus-add-report</strong> — straightforward, similar to <code>magnus-add-insight-article</code>.</li>
+            <li><strong>Branch preview deploys</strong> — Cloudflare Pages or Vercel branch previews so the publish skill can show a real-environment preview URL after the PR is merged. Eliminates the need for local <code>npm run dev</code> entirely for post-publish confirmation.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ─── Glossary ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="section-intro">
+            <span class="eyebrow">Glossary</span>
+            <h2>The terms that keep coming up.</h2>
+            <p>Plain-English definitions for the bits of the architecture that aren't obvious from context.</p>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="width:200px;"><strong>Astro</strong></td>
+                        <td>The framework the website is built in. Generates static HTML pages from <code>.astro</code> source files. Fast, well-suited to content sites, no runtime database.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Claude Cowork</strong></td>
+                        <td>A feature of the Claude Desktop app where Claude runs in a remote Linux sandbox. Distinct from solo Desktop, where Claude has direct access to the user's machine. Cowork's sandbox is the reason the bundled helper MCP exists.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Claude Code</strong></td>
+                        <td>Anthropic's command-line interface for Claude. Runs in a terminal. The toolkit works in Claude Code, Claude Desktop, and Cowork.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plugin</strong></td>
+                        <td>A bundle of capabilities Claude can install. The Magnus plugin is called <code>magnus-site</code> and contains the skills and the helper MCP.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Marketplace</strong></td>
+                        <td>A catalogue of plugins. We run our own private marketplace (the <code>magnus-claude-plugins</code> repo on GitHub) so Magnus admins can install the toolkit by name.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Skill</strong></td>
+                        <td>One documented admin action — "edit a page", "add an article", "add a team member". Each skill is a Markdown file describing what Claude does, what it refuses, and how it hands off.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MCP</strong> (Model Context Protocol)</td>
+                        <td>The protocol Claude uses to call out to external tools. Local MCPs run on the user's machine and are reachable from Cowork's sandbox via the user's account. The Magnus helper is a local stdio MCP shipped inside the plugin.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Slug</strong></td>
+                        <td>The URL-safe identifier for a page or record — <code>teresa-allan</code>, <code>gtm-confidence-index-2026</code>. Always lowercase, hyphenated, no spaces.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dynamic route</strong></td>
+                        <td>An Astro page like <code>src/pages/team/[slug].astro</code> that generates one page per record in a data file. Used for team profiles — adding a row to <code>team.ts</code> creates a new page automatically.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit log</strong></td>
+                        <td>A small text file (<code>.magnus-changes/pending.log</code>) inside the website repo where every gated change is recorded with timestamp, file, summary, approver. Read by the publish skill to compose the commit message and PR body.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Design contract</strong></td>
+                        <td>The <code>docs/llm-context.md</code> file inside the website repo. Defines the design system, components, brand voice, and page templates. The skills read this on every invocation. Updating the contract is how you teach the toolkit about a new component or convention.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>Magnus Site Admin Toolkit · v0.8.0 · Internal handover document</div>
+        <div>Source: <a href="https://github.com/ssu96ld/magnus-claude-plugins">github.com/ssu96ld/magnus-claude-plugins</a></div>
+    </div>
+</footer>
+
+</body>
+</html>
