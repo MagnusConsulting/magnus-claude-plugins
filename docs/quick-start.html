@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnus Site Admin Toolkit — Quick Start</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --coral:           #F55D4B;
+    --coral-dark:      #DB5344;
+    --navy:            #2C3E50;
+    --navy-dark:       #1F3038;
+    --navy-deep:       #162930;
+    --turquoise:       #009FAC;
+    --yellow:          #FFBE3B;
+    --slate:           #516572;
+    --slate-light:     #7A8894;
+    --gray:            #E8EAED;
+    --gray-light:      #F5F6F7;
+    --gray-lighter:    #FAFBFC;
+    --white:           #FFFFFF;
+
+    --font-heading: 'Libre Baskerville', Georgia, serif;
+    --font-body:    'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
+    --sp-5: 1.25rem; --sp-6: 1.5rem; --sp-7: 1.75rem; --sp-8: 2rem;
+    --sp-10: 2.5rem; --sp-12: 3rem; --sp-16: 4rem; --sp-20: 5rem;
+    --sp-24: 6rem;
+
+    --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-full: 9999px;
+
+    --t: 0.2s ease;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-body);
+    color: var(--navy);
+    background: var(--white);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--coral); text-decoration: none; transition: color var(--t); }
+a:hover { color: var(--coral-dark); }
+
+h1, h2 { font-family: var(--font-heading); color: var(--navy); line-height: 1.15; font-weight: 700; }
+h3, h4 { font-family: var(--font-body); color: var(--navy); font-weight: 600; line-height: 1.3; }
+h1 { font-size: clamp(34px, 4.6vw, 52px); margin: 0 0 var(--sp-6); }
+h2 { font-size: clamp(24px, 3vw, 30px); margin: 0 0 var(--sp-4); }
+h3 { font-size: 16px; margin: 0 0 var(--sp-3); }
+
+p  { margin: 0 0 var(--sp-4); color: var(--slate); font-size: 15px; line-height: 1.75; }
+p:last-child { margin-bottom: 0; }
+ul, ol { color: var(--slate); font-size: 15px; line-height: 1.75; }
+li + li { margin-top: var(--sp-2); }
+strong { color: var(--navy); font-weight: 600; }
+
+code, kbd {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--gray-light);
+    padding: 1px 6px;
+    border-radius: var(--r-sm);
+    color: var(--navy);
+}
+
+.container        { max-width: 880px; margin: 0 auto; padding: 0 var(--sp-8); }
+.container-narrow { max-width: 720px; margin: 0 auto; padding: 0 var(--sp-8); }
+
+.section          { padding: var(--sp-16) 0; }
+.section-bg-light { background: var(--white); }
+.section-bg-alt   { background: var(--gray-lighter); }
+.section-bg-navy  { background: var(--navy); color: var(--white); }
+.section-bg-navy h2, .section-bg-navy h3 { color: var(--white); }
+.section-bg-navy p, .section-bg-navy li { color: rgba(255,255,255,0.78); }
+.section-bg-navy strong { color: var(--white); }
+
+.eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: var(--sp-3);
+}
+
+.accent { color: var(--coral); }
+
+/* Top bar */
+.topbar {
+    background: linear-gradient(to right, var(--navy) 0%, var(--navy-dark) 100%);
+    padding: var(--sp-4) 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.topbar-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 var(--sp-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--white);
+}
+.brand-name {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--coral);
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+.brand-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-top: 2px;
+    line-height: 1;
+}
+.topbar-meta {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+}
+
+/* Hero */
+.hero {
+    background:
+        radial-gradient(ellipse at top right, rgba(245,93,75,0.12) 0%, transparent 60%),
+        linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+    color: var(--white);
+    padding: var(--sp-20) 0 var(--sp-16);
+}
+.hero h1 { color: var(--white); max-width: 720px; }
+.hero p.lede {
+    color: rgba(255,255,255,0.82);
+    font-size: 18px;
+    line-height: 1.65;
+    max-width: 600px;
+    margin: var(--sp-6) 0 var(--sp-10);
+}
+.hero-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--sp-6);
+    padding-top: var(--sp-6);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    max-width: 720px;
+}
+.hero-meta-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 4px;
+}
+.hero-meta-value { font-size: 14px; font-weight: 600; color: var(--white); line-height: 1.5; }
+
+/* Steps */
+.step {
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-radius: var(--r-xl);
+    padding: var(--sp-8) var(--sp-8) var(--sp-7);
+    margin-bottom: var(--sp-6);
+    position: relative;
+    overflow: hidden;
+}
+.step::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--coral);
+}
+.step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--coral);
+    color: var(--white);
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: var(--sp-4);
+}
+.step h2 {
+    font-size: 24px;
+    margin-bottom: var(--sp-3);
+}
+.step .est {
+    display: inline-block;
+    margin-left: var(--sp-3);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--turquoise);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+.step .est-warn { color: var(--coral); }
+
+/* Code blocks */
+pre {
+    background: var(--navy-deep);
+    color: rgba(255,255,255,0.92);
+    padding: var(--sp-5) var(--sp-6);
+    border-radius: var(--r-md);
+    overflow-x: auto;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: var(--sp-5) 0;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+pre code { background: transparent; padding: 0; color: inherit; font-size: inherit; }
+pre .copy-hint {
+    display: block;
+    margin-bottom: var(--sp-3);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+}
+
+/* What to expect blocks */
+.expect {
+    background: var(--gray-lighter);
+    border-left: 3px solid var(--turquoise);
+    border-radius: var(--r-md);
+    padding: var(--sp-5) var(--sp-6);
+    margin: var(--sp-5) 0;
+}
+.expect h3 {
+    font-size: 13px;
+    margin-bottom: var(--sp-3);
+    color: var(--turquoise);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+.expect p, .expect li { font-size: 14px; }
+
+/* Prompts table — for things the user has to interact with */
+.prompts {
+    list-style: none;
+    padding: 0;
+    margin: var(--sp-3) 0 0;
+}
+.prompts li {
+    padding: var(--sp-3) 0;
+    border-top: 1px solid var(--gray);
+    margin: 0;
+}
+.prompts li:last-child { border-bottom: 1px solid var(--gray); }
+.prompts-when {
+    display: block;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--coral);
+    background: rgba(245,93,75,0.08);
+    padding: 2px 8px;
+    border-radius: var(--r-sm);
+    margin-bottom: var(--sp-2);
+    font-weight: 600;
+}
+.prompts-do {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.55;
+}
+
+/* Callouts */
+.callout {
+    background: var(--white);
+    border: 1.5px solid var(--gray);
+    border-left: 4px solid var(--coral);
+    border-radius: var(--r-md);
+    padding: var(--sp-5) var(--sp-6);
+    margin: var(--sp-6) 0;
+}
+.callout.warn { border-left-color: var(--yellow); background: #FFFCF1; }
+.callout.teal { border-left-color: var(--turquoise); }
+.callout h3 { margin-bottom: var(--sp-2); font-size: 15px; }
+.callout p { font-size: 14px; }
+
+/* Footer */
+.footer {
+    background: var(--navy-deep);
+    color: rgba(255,255,255,0.55);
+    padding: var(--sp-10) 0;
+    font-size: 12px;
+}
+.footer-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 var(--sp-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+}
+.footer a { color: rgba(255,255,255,0.85); }
+
+@media print {
+    .topbar, .hero { background: var(--navy); color: var(--white); }
+    .footer { display: none; }
+    .step { page-break-inside: avoid; }
+    pre, .callout, .expect { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── Top bar ─── -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <div>
+            <div class="brand-name">MAGNUS</div>
+            <div class="brand-sub">Consulting</div>
+        </div>
+        <div class="topbar-meta">Quick start · v1.0</div>
+    </div>
+</div>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+    <div class="container">
+        <span class="eyebrow">Quick start</span>
+        <h1>From zero to your first edit. <span class="accent">In about 15 minutes.</span></h1>
+        <p class="lede">Five one-time steps. Once you've done them, the toolkit just works — every future change is a conversation with Claude. This guide is for the very first time only.</p>
+
+        <div class="hero-meta">
+            <div>
+                <span class="hero-meta-label">Time</span>
+                <span class="hero-meta-value">~15 minutes</span>
+            </div>
+            <div>
+                <span class="hero-meta-label">What you need</span>
+                <span class="hero-meta-value">Your Mac, a GitHub account, your Claude login</span>
+            </div>
+            <div>
+                <span class="hero-meta-label">Confidence level</span>
+                <span class="hero-meta-value">Comfortable copy-pasting two commands. No coding required.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Step 1 — Repo access ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="step">
+            <span class="step-num">1</span>
+            <h2>Get access to the website repo <span class="est est-warn">~1 min · needs a partner</span></h2>
+            <p>The Magnus website lives in a private GitHub repo at <a href="https://github.com/ssu96ld/magnusconsulting-co-uk">github.com/ssu96ld/magnusconsulting-co-uk</a>. You need to be invited as a collaborator before anything else will work.</p>
+
+            <div class="expect">
+                <h3>What to do</h3>
+                <ol>
+                    <li>Tell the build team (or the partner who owns the website) your GitHub username — the one you'll be signed in as.</li>
+                    <li>Wait for the invitation email. It comes from <strong>noreply@github.com</strong>.</li>
+                    <li>Click <strong>Accept invitation</strong> in the email — this opens GitHub in your browser and confirms access.</li>
+                    <li>Sanity check: visit <code>https://github.com/ssu96ld/magnusconsulting-co-uk</code>. If you see the repo, you're in. If you see a 404 page, the invitation hasn't been sent or accepted yet.</li>
+                </ol>
+            </div>
+
+            <div class="callout warn">
+                <h3>Don't skip this</h3>
+                <p>If you go to the next steps without repo access, the toolkit will keep failing with "authentication" or "not found" errors. They look like a tooling problem but they're an access problem.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Step 2 — Homebrew + gh ─── -->
+<section class="section section-bg-alt">
+    <div class="container">
+        <div class="step">
+            <span class="step-num">2</span>
+            <h2>Install the GitHub CLI <span class="est">~5 min · one terminal command</span></h2>
+            <p>The toolkit needs Git credentials on your Mac so it can clone, commit, and open pull requests. The cleanest way to set that up — even if you've never opened Terminal before — is to install Homebrew (a package manager) and then the GitHub CLI in one go.</p>
+
+            <ol>
+                <li>Open <strong>Terminal</strong>: hit <kbd>⌘ + Space</kbd>, type <code>Terminal</code>, press Return.</li>
+                <li>Copy the entire command in the box below. <strong>Paste it into Terminal and press Return.</strong></li>
+            </ol>
+
+<pre><span class="copy-hint">// paste this whole line into Terminal</span><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)" && brew install gh && gh auth login</code></pre>
+
+            <div class="expect">
+                <h3>What to expect — three pause points</h3>
+                <ul class="prompts">
+                    <li>
+                        <span class="prompts-when">Password:</span>
+                        <span class="prompts-do">Your <strong>Mac login password</strong> (the same one you use to install apps). Nothing appears as you type — that's normal. Press Return.</span>
+                    </li>
+                    <li>
+                        <span class="prompts-when">Press RETURN/ENTER to continue or any other key to abort:</span>
+                        <span class="prompts-do">Just press <strong>Return</strong>.</span>
+                    </li>
+                    <li>
+                        <span class="prompts-when">? What account do you want to log into?</span>
+                        <span class="prompts-do">Choose <strong>GitHub.com</strong>. Then HTTPS → Yes (authenticate Git) → Login with a web browser. Copy the one-time code shown, hit Return, your browser opens, paste the code, click <strong>Authorize</strong>. Back in Terminal, you'll see a green checkmark.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <p>Total time: ~5 minutes. The longest part is Homebrew downloading and compiling — let it run.</p>
+
+            <div class="callout teal">
+                <h3>Sanity check</h3>
+                <p>After it finishes, type <code>gh auth status</code> and press Return. You should see <strong>✓ Logged in to github.com</strong> with your username. If yes, you're done with step 2.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Step 3 — Make sure you have Claude ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="step">
+            <span class="step-num">3</span>
+            <h2>Open Claude <span class="est">~2 min</span></h2>
+            <p>You need any one of these — whichever you prefer. They all work with the toolkit.</p>
+
+            <ul>
+                <li><strong>Claude Desktop app</strong> — the standalone app for Mac. <a href="https://claude.ai/download">claude.ai/download</a></li>
+                <li><strong>Claude Cowork</strong> — a feature inside Claude Desktop. Same install, just a different mode within the app.</li>
+                <li><strong>Claude Code</strong> — the command-line version. Run <code>npm install -g @anthropic-ai/claude-code</code> in Terminal then <code>claude</code>.</li>
+            </ul>
+
+            <p>Sign in to your Claude account if you haven't already. The plugin works on a paid plan (Pro / Max / Team / Enterprise).</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Step 4 — Install the plugin ─── -->
+<section class="section section-bg-alt">
+    <div class="container">
+        <div class="step">
+            <span class="step-num">4</span>
+            <h2>Install the Magnus plugin <span class="est">~1 min</span></h2>
+            <p>Inside any Claude session, paste these three commands one at a time. Press Return after each.</p>
+
+<pre><code>/plugin marketplace add ssu96ld/magnus-claude-plugins
+/plugin install magnus-site
+/reload-plugins</code></pre>
+
+            <div class="expect">
+                <h3>What to expect</h3>
+                <p>The first command tells Claude where to find the plugin. The second installs it. The third reloads Claude so the new skills become available. After that, Claude knows how to edit the Magnus website.</p>
+                <p>If the first command asks "Are you sure?" or similar, say yes — it's just confirming you want to add a third-party marketplace.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Step 5 — Run setup ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="step">
+            <span class="step-num">5</span>
+            <h2>Get the website onto your Mac <span class="est">~3 min</span></h2>
+            <p>Tell Claude — in plain English — to set things up:</p>
+
+<pre><code>Run magnus-setup</code></pre>
+
+            <div class="expect">
+                <h3>What Claude will do</h3>
+                <ol>
+                    <li>Check if you already have the website folder on your Mac. (You don't — it's your first time.)</li>
+                    <li>Offer to clone it for you. Say <strong>yes</strong>.</li>
+                    <li>Ask where to put it. Default is fine: a subfolder in your current location, named <code>magnusconsulting-co-uk</code>.</li>
+                    <li>Run <code>npm install</code> to set up the website's dependencies. This takes 30 seconds to a minute.</li>
+                    <li>Tell you the absolute path of the cloned folder, and ask you to <strong>start a new Claude session with that folder as the working directory</strong>.</li>
+                </ol>
+            </div>
+
+            <div class="callout">
+                <h3>Why a new session?</h3>
+                <p>Claude's idea of "what folder am I in" is set when the session starts and doesn't change mid-flow. To use the rest of the toolkit, you start fresh inside the magnus folder. Once there, Claude has everything it needs.</p>
+            </div>
+
+            <ul>
+                <li><strong>In Claude Code:</strong> in Terminal, <code>cd</code> into the cloned folder, then run <code>claude</code>.</li>
+                <li><strong>In Claude Desktop / Cowork:</strong> start a new session and pick the cloned folder as the project folder.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ─── You're done ─── -->
+<section class="section section-bg-navy">
+    <div class="container">
+        <span class="eyebrow" style="color:var(--turquoise);">You're done</span>
+        <h2>That's the whole setup. The next time you want to edit the site, just open Claude.</h2>
+        <p>From here, you ask Claude to do things in plain English — fix a typo, add an article, add a team member, publish the changes. The full vocabulary lives in the user guide:</p>
+        <p style="margin-top:var(--sp-6);"><strong>→ Read the <a href="./admin-guide.html">user guide</a></strong> for the recipes, approval rules, preview, and publishing.</p>
+    </div>
+</section>
+
+<!-- ─── If you hit a snag ─── -->
+<section class="section section-bg-light">
+    <div class="container">
+        <span class="eyebrow">If you hit a snag</span>
+        <h2>Common first-run issues.</h2>
+
+        <div class="callout warn">
+            <h3>"Authentication failed" or "Repository not found" when Claude tries to clone</h3>
+            <p>Step 1 — repo access — hasn't completed. Either you haven't been invited yet, or you haven't accepted the invitation email. Visit <code>https://github.com/ssu96ld/magnusconsulting-co-uk</code> in a browser to confirm you can see it. If you see a 404, ask the build team to invite you (and check Spam for the invite email).</p>
+        </div>
+
+        <div class="callout warn">
+            <h3>Terminal says <code>command not found: brew</code> after pasting the install command</h3>
+            <p>Homebrew installed but the shell session doesn't see it yet. Quit Terminal entirely (⌘+Q), open a fresh Terminal, and try <code>gh auth login</code> directly. If that works, you're set — the previous steps already finished.</p>
+        </div>
+
+        <div class="callout warn">
+            <h3>Claude says it can't find authentication and suggests installing <code>gh</code></h3>
+            <p>You've already installed <code>gh</code> in step 2 — Claude is just defaulting to that suggestion. Run <code>gh auth status</code> in Terminal to confirm you're still logged in. If yes, the issue is repo access (step 1). If <code>gh auth status</code> says you're logged out, run <code>gh auth login</code> again.</p>
+        </div>
+
+        <div class="callout">
+            <h3>Anything else</h3>
+            <p>Send the build team a screenshot of what Claude said. Most issues are quick fixes once they can see what error came up.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>Magnus Site Admin Toolkit · Quick start · v1.0</div>
+        <div>Source: <a href="https://github.com/ssu96ld/magnus-claude-plugins">github.com/ssu96ld/magnus-claude-plugins</a></div>
+    </div>
+</footer>
+
+</body>
+</html>
