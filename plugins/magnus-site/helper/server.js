@@ -10,6 +10,7 @@
 //   magnus_dev_stop        — kill whatever owns port 4321
 //   magnus_open_url        — open localhost:4321 URL in default browser
 //   magnus_set_repo_path   — persist absolute path to magnus repo
+//   magnus_save_asset      — write a base64-encoded file into public/<category>/
 //
 // Implements the minimum MCP protocol (initialize, tools/list,
 // tools/call) over stdio. No external dependencies.
@@ -21,7 +22,7 @@ const http = require('http');
 const { spawn, exec, execSync } = require('child_process');
 const readline = require('readline');
 
-const SERVER_INFO = { name: 'magnus-helper', version: '0.7.0' };
+const SERVER_INFO = { name: 'magnus-helper', version: '0.8.0' };
 const FALLBACK_PROTOCOL_VERSION = '2025-06-18';
 const PORT = 4321;
 const CONFIG_DIR = path.join(os.homedir(), '.config', 'magnus-helper');
@@ -31,6 +32,17 @@ const SCAN_ROOTS = ['dev', 'Documents', 'Sites', 'Projects', 'Code', 'Developer'
 const MAX_SCAN_DEPTH = 2;
 const READY_TIMEOUT_MS = 30000;
 const POLL_INTERVAL_MS = 500;
+
+// Allowed asset categories — maps to public/<category>/ directories.
+// Each entry: { allowed: [extensions], maxBytes: size cap }.
+const ASSET_CATEGORIES = {
+  team:    { allowed: ['jpg', 'jpeg', 'png', 'webp'], maxBytes:  5 * 1024 * 1024 },
+  logos:   { allowed: ['svg', 'png', 'webp'],          maxBytes:  1 * 1024 * 1024 },
+  reports: { allowed: ['pdf'],                          maxBytes: 25 * 1024 * 1024 },
+  images:  { allowed: ['jpg', 'jpeg', 'png', 'webp'],  maxBytes:  5 * 1024 * 1024 },
+  icons:   { allowed: ['svg'],                          maxBytes: 500 * 1024 },
+  og:      { allowed: ['jpg', 'jpeg', 'png'],           maxBytes:  5 * 1024 * 1024 },
+};
 
 // ─── config persistence ────────────────────────────────────────────
 
@@ -268,6 +280,45 @@ const TOOLS = [
       required: ['path'],
     },
   },
+  {
+    name: 'magnus_save_asset',
+    description:
+      'Write a base64-encoded file into public/<category>/<filename> on the magnus ' +
+      'repo, on the user\'s Mac. Use when an admin attaches a file in chat (image, ' +
+      'logo, PDF) — Claude reads the attachment as base64 and passes it here. ' +
+      'Validates filename format (kebab-case + extension), category (team / logos / ' +
+      'reports / images / icons / og), file extension against the category\'s allowed ' +
+      'list, and size against per-category caps. Refuses to overwrite existing files ' +
+      'unless replace:true. Creates the public/<category>/ directory if missing. ' +
+      'Returns { saved, path, publicPath, bytes, replaced } on success or a typed ' +
+      'error code (INVALID_FILENAME / INVALID_CATEGORY / TYPE_MISMATCH / TOO_LARGE / ' +
+      'INVALID_BASE64 / ALREADY_EXISTS / WRITE_FAILED / REPO_NOT_FOUND / AMBIGUOUS_REPO).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        filename: {
+          type: 'string',
+          description: 'Kebab-case filename with extension (e.g. "teresa-allan.jpg").',
+        },
+        contentBase64: {
+          type: 'string',
+          description: 'File contents, base64-encoded. Don\'t include data: prefixes.',
+        },
+        category: {
+          type: 'string',
+          enum: ['team', 'logos', 'reports', 'images', 'icons', 'og'],
+          description: 'Maps to public/<category>/. team for headshots, logos for ' +
+            'client logos, reports for PDFs, images for hero/feature images, ' +
+            'icons for inline SVGs, og for social cards.',
+        },
+        replace: {
+          type: 'boolean',
+          description: 'If true, overwrite an existing file at the same path. Default false.',
+        },
+      },
+      required: ['filename', 'contentBase64', 'category'],
+    },
+  },
 ];
 
 // ─── tool handlers ─────────────────────────────────────────────────
@@ -400,6 +451,137 @@ function handleSetRepoPath(args) {
   return textResult({ saved: true, repoPath: p });
 }
 
+function handleSaveAsset(args) {
+  const { filename, contentBase64, category, replace = false } = args || {};
+
+  // Validate filename
+  if (typeof filename !== 'string' || !filename) {
+    return textResult({
+      error: 'INVALID_FILENAME',
+      message: 'filename must be a non-empty string.',
+    });
+  }
+  if (!/^[a-z0-9][a-z0-9-]*\.[a-z0-9]+$/i.test(filename)) {
+    return textResult({
+      error: 'INVALID_FILENAME',
+      message:
+        'filename must be kebab-case with a single extension ' +
+        `(e.g. "teresa-allan.jpg") — got ${JSON.stringify(filename)}.`,
+    });
+  }
+
+  // Validate category
+  const cat = ASSET_CATEGORIES[category];
+  if (!cat) {
+    return textResult({
+      error: 'INVALID_CATEGORY',
+      message:
+        `category must be one of: ${Object.keys(ASSET_CATEGORIES).join(', ')}. ` +
+        `Got ${JSON.stringify(category)}.`,
+    });
+  }
+
+  // Validate extension matches category
+  const ext = filename.split('.').pop().toLowerCase();
+  if (!cat.allowed.includes(ext)) {
+    return textResult({
+      error: 'TYPE_MISMATCH',
+      message:
+        `Files in '${category}' must be one of: ${cat.allowed.join(', ')}. ` +
+        `Got .${ext}.`,
+    });
+  }
+
+  // Decode base64
+  if (typeof contentBase64 !== 'string' || !contentBase64.length) {
+    return textResult({
+      error: 'INVALID_BASE64',
+      message: 'contentBase64 must be a non-empty base64 string.',
+    });
+  }
+  let buffer;
+  try {
+    buffer = Buffer.from(contentBase64, 'base64');
+  } catch (err) {
+    return textResult({
+      error: 'INVALID_BASE64',
+      message: `Failed to decode base64 content: ${err.message}`,
+    });
+  }
+  if (!buffer.length) {
+    return textResult({
+      error: 'INVALID_BASE64',
+      message: 'Decoded content is empty — base64 string was likely malformed.',
+    });
+  }
+
+  // Size check
+  if (buffer.length > cat.maxBytes) {
+    return textResult({
+      error: 'TOO_LARGE',
+      message:
+        `File is ${(buffer.length / 1024 / 1024).toFixed(2)}MB — limit for ` +
+        `'${category}' is ${(cat.maxBytes / 1024 / 1024).toFixed(0)}MB. ` +
+        'Compress (Squoosh, ImageOptim) and retry.',
+      bytes: buffer.length,
+      maxBytes: cat.maxBytes,
+    });
+  }
+
+  // Resolve repo path
+  const resolved = resolveRepoPath();
+  if (resolved.error) {
+    return textResult(resolved);
+  }
+
+  // Build target path
+  const targetDir = path.join(resolved.path, 'public', category);
+  const targetPath = path.join(targetDir, filename);
+  const fileExisted = fs.existsSync(targetPath);
+
+  if (fileExisted && !replace) {
+    return textResult({
+      error: 'ALREADY_EXISTS',
+      message:
+        `${targetPath} already exists. Pass replace:true to overwrite, or pick ` +
+        'a different filename.',
+      path: targetPath,
+    });
+  }
+
+  // Ensure directory exists
+  try {
+    fs.mkdirSync(targetDir, { recursive: true });
+  } catch (err) {
+    return textResult({
+      error: 'WRITE_FAILED',
+      message: `Failed to create directory ${targetDir}: ${err.message}`,
+    });
+  }
+
+  // Write the file
+  try {
+    fs.writeFileSync(targetPath, buffer);
+  } catch (err) {
+    return textResult({
+      error: 'WRITE_FAILED',
+      message: `Failed to write file: ${err.message}`,
+    });
+  }
+
+  // Verify
+  const stat = fs.statSync(targetPath);
+
+  return textResult({
+    saved: true,
+    path: targetPath,
+    publicPath: `/${category}/${filename}`,
+    bytes: stat.size,
+    category,
+    replaced: fileExisted,
+  });
+}
+
 // ─── protocol ──────────────────────────────────────────────────────
 
 function send(message) {
@@ -465,6 +647,7 @@ rl.on('line', async (line) => {
           case 'magnus_dev_stop': result = await handleStop(); break;
           case 'magnus_open_url': result = await handleOpenUrl(args); break;
           case 'magnus_set_repo_path': result = handleSetRepoPath(args); break;
+          case 'magnus_save_asset': result = handleSaveAsset(args); break;
           default:
             errorReply(id, -32602, `Unknown tool: ${name}`);
             return;

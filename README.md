@@ -50,6 +50,7 @@ Tools exposed:
 | `magnus_dev_stop` | Stop whatever is on port 4321 (TERM via `lsof + kill`). |
 | `magnus_open_url` | Open a `localhost:4321` URL in the user's default browser. Refuses anything else. |
 | `magnus_set_repo_path` | Persist an absolute path to the magnus repo on disk. Used after `AMBIGUOUS_REPO` / `REPO_NOT_FOUND`. |
+| `magnus_save_asset` | Write a base64-encoded file into `public/<category>/<filename>` on the user's Mac. Validates filename format (kebab-case + extension), category (team / logos / reports / images / icons / og), extension against the category's allowed list, and size against per-category caps. Refuses to overwrite existing files unless `replace:true`. **Solves the binary-file upload problem in Cowork** — Claude reads a chat-attached file as base64 and passes it through; the helper writes it locally. |
 
 Zero external dependencies; implements the minimum MCP protocol over stdio (initialize / tools/list / tools/call) directly. The `magnus-preview` skill prefers Claude_Preview when available and falls through to this helper in Cowork.
 

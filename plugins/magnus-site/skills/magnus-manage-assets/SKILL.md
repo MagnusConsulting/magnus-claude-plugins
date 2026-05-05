@@ -41,26 +41,33 @@ If the target subdirectory doesn't exist yet, create it (`mkdir -p public/<dir>`
 
 ## Step 4 — Locate the source file
 
-The user can supply the file in three ways. Prefer in this order:
+The user can supply the file in four ways. Pick the one that fits how the file arrives.
 
-### 4a · Absolute path on disk
+### 4a · Attached in chat (preferred — works everywhere including Cowork)
 
-The user pastes an absolute path (e.g. `/Users/leedavies/Downloads/teresa-headshot.jpg`).
+The user drops a file into the chat. Read the attachment as base64 and call the **`magnus_save_asset`** MCP tool — the bundled magnus-helper writes it on the user's Mac, even from a Cowork sandbox.
+
+```
+magnus_save_asset({
+  filename: "<sanitised-kebab-case>.<ext>",
+  contentBase64: "<base64 string, no data: prefix>",
+  category: "<team|logos|reports|images|icons|og>",
+  replace: false
+})
+```
+
+The tool validates the filename format, the category, the extension against the category's allowed list, and the size against per-category caps. Returned errors are typed and self-explanatory — `INVALID_FILENAME`, `TYPE_MISMATCH`, `TOO_LARGE`, `ALREADY_EXISTS`, `INVALID_BASE64`, `INVALID_CATEGORY`, `WRITE_FAILED`, plus the standard `REPO_NOT_FOUND` / `AMBIGUOUS_REPO` if the helper can't find the magnus repo.
+
+On success the tool returns `{ saved, path, publicPath, bytes, replaced }`. Use `publicPath` (e.g. `/team/teresa-allan.jpg`) when you wire the asset into a referencing data file in Step 6.
+
+If `magnus_save_asset` errors with "tool not available" (the magnus-helper MCP isn't wired into this session for some reason), fall back to 4b.
+
+### 4b · Absolute path on disk
+
+The user pastes an absolute path (e.g. `/Users/leedavies/Downloads/teresa-headshot.jpg`). Works in Claude Code or solo Claude Desktop where Bash sees the user's filesystem.
 
 - Confirm the path exists: `test -f <path> && echo OK || echo MISSING`. Stop on MISSING.
 - Use `cp <source> public/<dir>/<filename>` to copy. **Never `mv`** — leave the source intact in case the user wants to keep it.
-
-This is the cleanest path and works in every Claude environment.
-
-### 4b · Attached in chat
-
-The user drops a file into the chat. Behaviour depends on environment:
-
-- **If the file content is readable as text** (SVG, plain `.txt` for content) — read the attachment, then `Write` the content to `public/<dir>/<filename>`.
-- **If binary (image, PDF)** — Claude may not be able to write binary content directly via the `Write` tool. Tell the user:
-  > Claude can't reliably write binary attachments directly. Either:
-  > 1. Save the file somewhere on your Mac (e.g. `~/Downloads/`), then paste the absolute path, or
-  > 2. Place it manually in `public/<dir>/<filename>` and tell me to wire it up — I'll skip the copy step and only update referencing data.
 
 ### 4c · "It's already in `public/`"
 
