@@ -281,6 +281,20 @@ const TOOLS = [
     },
   },
   {
+    name: 'magnus_validate',
+    description:
+      'Run the magnus repo\'s production build (and astro check if available) on ' +
+      'the user\'s Mac, where the native binaries actually work. Use as the pre-flight ' +
+      'gate before magnus-publish commits. Required for Cowork — Cowork\'s sandbox is ' +
+      'Linux ARM64 and can\'t execute Mac-installed node_modules native binaries ' +
+      '(rollup, sharp, etc.), so `npm run build` from inside Cowork always fails. This ' +
+      'tool runs the same commands on the Mac via the local helper. Returns ' +
+      '{ build: { status, output }, astroCheck: { status, output } }. status is "ok" / ' +
+      '"failed" / "skipped" (astroCheck skipped if @astrojs/check isn\'t installed). ' +
+      'Build timeout 180s; check timeout 120s.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+  },
+  {
     name: 'magnus_save_asset',
     description:
       'Write a base64-encoded file into public/<category>/<filename> on the magnus ' +
@@ -449,6 +463,62 @@ function handleSetRepoPath(args) {
   const cfg = loadConfig();
   saveConfig({ ...cfg, repoPath: p });
   return textResult({ saved: true, repoPath: p });
+}
+
+function handleValidate() {
+  const resolved = resolveRepoPath();
+  if (resolved.error) return textResult(resolved);
+
+  const tail = (s, n) => (s || '').toString().split('\n').slice(-n).join('\n');
+  const result = { repoPath: resolved.path, build: null, astroCheck: null };
+
+  // astro check — skip cleanly if @astrojs/check isn't installed
+  const hasAstroCheck = fs.existsSync(
+    path.join(resolved.path, 'node_modules', '@astrojs', 'check'),
+  );
+  if (!hasAstroCheck) {
+    result.astroCheck = {
+      status: 'skipped',
+      message:
+        '@astrojs/check not installed. Run `npm install -D @astrojs/check typescript` ' +
+        'in the magnus repo to enable type-checking in this gate.',
+    };
+  } else {
+    try {
+      const out = execSync('npx astro check 2>&1', {
+        cwd: resolved.path,
+        encoding: 'utf8',
+        timeout: 120000,
+      });
+      result.astroCheck = { status: 'ok', output: tail(out, 15) };
+    } catch (err) {
+      result.astroCheck = {
+        status: 'failed',
+        output: tail(err.stdout, 25) || err.message,
+      };
+    }
+  }
+
+  // npm run build — always required
+  try {
+    const out = execSync('npm run build 2>&1', {
+      cwd: resolved.path,
+      encoding: 'utf8',
+      timeout: 180000,
+    });
+    result.build = { status: 'ok', output: tail(out, 10) };
+  } catch (err) {
+    result.build = {
+      status: 'failed',
+      output: tail(err.stdout, 25) || err.message,
+    };
+  }
+
+  const allOk =
+    result.build.status === 'ok' &&
+    (result.astroCheck.status === 'ok' || result.astroCheck.status === 'skipped');
+
+  return textResult({ ...result, passed: allOk });
 }
 
 function handleSaveAsset(args) {
@@ -648,6 +718,7 @@ rl.on('line', async (line) => {
           case 'magnus_open_url': result = await handleOpenUrl(args); break;
           case 'magnus_set_repo_path': result = handleSetRepoPath(args); break;
           case 'magnus_save_asset': result = handleSaveAsset(args); break;
+          case 'magnus_validate': result = handleValidate(); break;
           default:
             errorReply(id, -32602, `Unknown tool: ${name}`);
             return;

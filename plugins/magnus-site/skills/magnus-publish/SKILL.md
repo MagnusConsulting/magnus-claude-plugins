@@ -31,12 +31,35 @@ If the file doesn't exist or is empty, that means no gated changes were made —
 
 ## Step 4 — Pre-flight validation
 
-Run two checks in sequence:
+Validation **must** run on the user's Mac, not in the Cowork sandbox. Cowork is Linux ARM64; the magnus repo's `node_modules` is macOS-installed; native binaries (rollup, sharp) are platform-specific. `npm run build` from inside a Cowork Bash will always fail with `@rollup/rollup-linux-* not found` even though the build is perfectly fine on the Mac.
 
-1. **`npx astro check 2>&1 | tail -20`** — refuse to proceed on any error in the new code. Pre-existing warnings are fine.
-2. **`npm run build 2>&1 | tail -30`** — refuse to proceed if the build fails.
+### Step 4a — Prefer `magnus_validate` (works in every context)
 
-If either fails, tell the user exactly what failed (paste the relevant tail), do not commit, and offer to roll back the offending change. Don't try to fix the failure yourself unless the user asks — that's a separate workflow.
+Call the `magnus_validate` MCP tool. It runs `npm run build` (and `npx astro check` if installed) on the user's Mac via the local helper and returns:
+
+```
+{
+  repoPath: "/Users/.../magnus",
+  passed: true | false,
+  build:      { status: "ok" | "failed", output: "<tail>" },
+  astroCheck: { status: "ok" | "failed" | "skipped", output: "<tail>" }
+}
+```
+
+**If `passed: true`** → proceed to Step 5.
+
+**If `passed: false`** → stop immediately. Paste the failing tail to the user verbatim. Refuse to commit. Offer to roll back the offending change. **Do not negotiate around the gate** — even if "the dev server is running fine" or "the change looks trivially correct". The build is the gate; if the build fails, the change doesn't ship.
+
+### Step 4b — Fallback (no helper, e.g. Claude Code in a terminal off the helper)
+
+If `magnus_validate` errors with "tool not available", you're in a context with direct Bash access to the user's machine. Run the same commands manually:
+
+1. **`npx astro check 2>&1 | tail -20`** — refuse on any error in new code. Pre-existing warnings are fine.
+2. **`npm run build 2>&1 | tail -30`** — refuse if the build fails.
+
+### Never bypass
+
+In Cowork, do NOT run `npm run build` via the sandbox Bash. It will always fail and you'll be tempted to rationalise around it. The correct response to a sandbox-side failure is **not** "the change looks fine, let me commit anyway" — it's "the sandbox can't validate; use `magnus_validate` to validate on the Mac". If `magnus_validate` isn't available and Bash validation fails, stop and tell the user. **A failing gate is a gate, not a suggestion.**
 
 ## Step 5 — Branch handling
 
