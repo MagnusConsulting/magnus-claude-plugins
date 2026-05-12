@@ -574,7 +574,7 @@ pre code {
                 <div class="arch-label">Layer 1 · Site</div>
                 <div class="arch-content navy">
                     <h4>magnusconsulting-co-uk</h4>
-                    <p>The Astro website itself. Private GitHub repo. <code>git push</code> to <code>main</code> triggers the deploy webhook. This is the only repo where production code lives.</p>
+                    <p>The Astro website itself. Private GitHub repo. <code>git push</code> to the <code>staging</code> branch triggers CI, which auto-deploys to <code>staging.magnusconsulting.co.uk</code>. As far as the toolkit and admins are concerned, <code>staging</code> is the live site.</p>
                 </div>
             </div>
 
@@ -606,7 +606,7 @@ pre code {
                 <div class="arch-label">Layer 5 · Audit</div>
                 <div class="arch-content coral">
                     <h4>.magnus-changes/pending.log</h4>
-                    <p>A small log file inside the website repo, gitignored from production but read by the publish skill. Every gated change appends one line: timestamp, file path, summary, approver. The publish skill copies these into the commit message and PR body, then truncates the log.</p>
+                    <p>A small log file inside the website repo, gitignored from production but read by the publish skill. Every gated change appends one line: timestamp, file path, summary, approver. The publish skill copies these into the commit message that lands on <code>staging</code>, then truncates the log.</p>
                 </div>
             </div>
 
@@ -710,10 +710,10 @@ pre code {
 
 <pre><code>2026-04-30T15:21:10Z | src/pages/impact/growth-story/dhl/strategic-accounts.astro | Update DHL pipeline metric from £270M to £290M | approved by Teresa Allan</code></pre>
 
-        <p>The publish skill (when it lands) reads this log, copies every line into the commit message and PR description, and truncates the log file. The result is a clean audit trail: every gated change in the website's git history carries the name of the person who signed it off, and the corresponding PR carries the same record.</p>
+        <p>The publish skill reads this log, copies every line into the commit message that lands on <code>staging</code>, and truncates the log file. The result is a clean audit trail: every gated change in the website's git history carries the name of the person who signed it off.</p>
 
         <h3 style="margin-top:var(--sp-12); color:var(--white);">What the gate doesn't replace</h3>
-        <p style="max-width:720px;">The in-skill gate is a process check — it forces the admin to assert sign-off, and records the assertion. It doesn't replace partner judgement. The right way to think about it: the gate is the same friction as a "check before you commit" prompt, made auditable. Real review still happens via PR (planned in <code>magnus-publish</code>) and via the partners themselves before the admin opens the chat.</p>
+        <p style="max-width:720px;">The in-skill gate is a process check — it forces the admin to assert sign-off, and records the assertion. It doesn't replace partner judgement. The right way to think about it: the gate is the same friction as a "check before you commit" prompt, made auditable. Real review still happens with the partners themselves before the admin opens the chat — the gate just captures the assertion so it's traceable in the commit history.</p>
     </div>
 </section>
 
@@ -772,7 +772,7 @@ pre code {
                         <td><strong>Website code</strong><br><code>magnusconsulting-co-uk</code></td>
                         <td>Build team / developer</td>
                         <td>Per feature</td>
-                        <td><code>git push</code> to <code>main</code> triggers the deploy webhook. New components and pages land here.</td>
+                        <td>Build-team changes land on <code>main</code>, then get merged forward to <code>staging</code>. CI auto-deploys <code>staging</code> to <code>staging.magnusconsulting.co.uk</code>. New components and design tokens land via this flow.</td>
                     </tr>
                     <tr>
                         <td><strong>Design contract</strong><br><code>docs/llm-context.md</code></td>
@@ -790,7 +790,7 @@ pre code {
                         <td><strong>Site content</strong><br>pages, articles, team bios, growth stories</td>
                         <td>Magnus admins, with partner sign-off where gated</td>
                         <td>Continuous</td>
-                        <td>Admin uses skills → audit log captures approval → publish skill (planned) commits to a branch and opens a PR → reviewer merges → deploy fires.</td>
+                        <td>Admin uses skills → audit log captures approval → publish skill commits to <code>staging</code> with the audit lines embedded and pushes → CI auto-deploys to <code>staging.magnusconsulting.co.uk</code>.</td>
                     </tr>
                 </tbody>
             </table>
@@ -836,7 +836,7 @@ pre code {
                     <li>Photo and asset uploads — the toolkit doesn't yet handle binary files</li>
                     <li>Adding new components or design tokens — a developer change to the website repo and contract</li>
                     <li>The actual content sign-off from partners or the bio's subject before the admin asserts approval</li>
-                    <li>PR review and merge to <code>main</code> — branch-protected, deploy-gating</li>
+                    <li>Promoting <code>staging</code> further (e.g. to a separate production environment) — out of scope for the toolkit, owned by the build team</li>
                     <li>Adding new skills or capabilities to the plugin — a developer change to the marketplace repo</li>
                 </ul>
             </div>
@@ -870,7 +870,7 @@ pre code {
 
         <h3 style="margin-top:var(--sp-10);">Next (next iteration)</h3>
         <ul>
-            <li><strong>magnus-publish</strong> — closes the loop. Validates against the design contract, branches off <code>main</code>, builds, commits with the audit log embedded in the message, opens a PR, and hands the URL back. Branch protection on <code>main</code> ensures no admin can push directly.</li>
+            <li><strong>magnus-publish</strong> — closes the loop. Validates against the design contract, builds, commits to the <code>staging</code> branch with the audit log embedded in the message, and pushes. CI auto-deploys <code>staging.magnusconsulting.co.uk</code> on every successful push. Refuses to operate on any branch other than <code>staging</code>.</li>
             <li><strong>magnus-manage-assets</strong> — handles photo and document uploads to the website's <code>public/</code> directory. Required for the team profile pages to show real photos rather than placeholders.</li>
         </ul>
 
@@ -878,7 +878,7 @@ pre code {
         <ul>
             <li><strong>magnus-add-growth-story</strong> — large surface area, needs a careful pass over the <code>GrowthStoryLayout</code> data shape.</li>
             <li><strong>magnus-add-report</strong> — straightforward, similar to <code>magnus-add-insight-article</code>.</li>
-            <li><strong>Branch preview deploys</strong> — Cloudflare Pages or Vercel branch previews so the publish skill can show a real-environment preview URL after the PR is merged. Eliminates the need for local <code>npm run dev</code> entirely for post-publish confirmation.</li>
+            <li><strong>Ephemeral preview environments</strong> — per-change preview URLs for in-progress edits before they hit <code>staging</code>. Would eliminate the need for local <code>npm run dev</code> entirely; <code>staging.magnusconsulting.co.uk</code> already serves as the post-push preview.</li>
         </ul>
     </div>
 </section>
@@ -933,7 +933,7 @@ pre code {
                     </tr>
                     <tr>
                         <td><strong>Audit log</strong></td>
-                        <td>A small text file (<code>.magnus-changes/pending.log</code>) inside the website repo where every gated change is recorded with timestamp, file, summary, approver. Read by the publish skill to compose the commit message and PR body.</td>
+                        <td>A small text file (<code>.magnus-changes/pending.log</code>) inside the website repo where every gated change is recorded with timestamp, file, summary, approver. Read by the publish skill to compose the commit message that lands on <code>staging</code>.</td>
                     </tr>
                     <tr>
                         <td><strong>Design contract</strong></td>

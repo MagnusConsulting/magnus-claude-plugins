@@ -19,15 +19,21 @@ Run `pwd` and check for the three markers a magnus repo must contain:
 
 Use Read for the files, Bash `test -d` for the directory.
 
-If all three are present:
+If all three are present, also check the current branch with `git branch --show-current`. The toolkit only ever operates on `staging` — CI auto-deploys it to **https://staging.magnusconsulting.co.uk**, which is the live site for admins.
 
-> You're in the magnus repo at `<absolute-path>`. Everything is ready — go ahead and use any of the magnus-site skills (`magnus-edit-page`, `magnus-add-insight-article`, `magnus-preview`, …).
+- **On `staging`** → confirm and stop:
+
+  > You're in the magnus repo at `<absolute-path>`, on the `staging` branch. Everything is ready — go ahead and use any of the magnus-site skills (`magnus-edit-page`, `magnus-add-insight-article`, `magnus-preview`, …).
+
+- **On any other branch** → warn but don't auto-switch (the user may have intentional local work):
+
+  > You're in the magnus repo at `<absolute-path>`, but on `<branch>` — the toolkit only publishes from `staging`. Switch with `git checkout staging` (run `git stash` first if you have uncommitted work to keep), then re-run **magnus-setup** to confirm.
 
 Stop here.
 
 ## Step 2 — If something is partial
 
-If the current folder is a git repo (`test -d .git`) and `git remote get-url origin` matches `https://github.com/ssu96ld/magnusconsulting-co-uk` (with or without `.git`), but one of the three markers is missing, the clone is incomplete. Tell the user which markers are missing, suggest `git pull`, and stop.
+If the current folder is a git repo (`test -d .git`) and `git remote get-url origin` matches `https://github.com/MagnusConsulting/magnusconsulting-co-uk` (with or without `.git`), but one of the three markers is missing, the clone is incomplete. Tell the user which markers are missing, suggest `git pull`, and stop.
 
 For anything else, continue to Step 3.
 
@@ -47,11 +53,11 @@ The current session isn't pointed at the magnus repo. Don't try to fix that from
 >   && brew install gh node \
 >   && gh auth login \
 >   && mkdir -p ~/Projects/Claude \
->   && gh repo clone ssu96ld/magnusconsulting-co-uk ~/Projects/Claude/magnus-website \
+>   && gh repo clone MagnusConsulting/magnusconsulting-co-uk ~/Projects/Claude/magnus-website -- --branch staging \
 >   && (cd ~/Projects/Claude/magnus-website && npm install)
 > ```
 >
-> The paste does five things in one go: installs Homebrew + `gh` + Node, logs you into GitHub (pause to authorise in your browser when prompted), clones the website into `~/Projects/Claude/magnus-website`, and runs `npm install`. Takes about 8–10 minutes the first time, mostly Homebrew and `npm install`.
+> The paste does five things in one go: installs Homebrew + `gh` + Node, logs you into GitHub (pause to authorise in your browser when prompted), clones the website's `staging` branch into `~/Projects/Claude/magnus-website` (the toolkit only ever operates on `staging` — CI auto-deploys it to staging.magnusconsulting.co.uk, which is the live site for admins), and runs `npm install`. Takes about 8–10 minutes the first time, mostly Homebrew and `npm install`.
 >
 > When it finishes:
 >

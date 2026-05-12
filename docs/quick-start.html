@@ -369,7 +369,7 @@ pre .copy-hint {
         <div class="step">
             <span class="step-num">1</span>
             <h2>Get access to the website repo <span class="est est-warn">~1 min · needs a partner</span></h2>
-            <p>The Magnus website lives in a private GitHub repo at <a href="https://github.com/ssu96ld/magnusconsulting-co-uk">github.com/ssu96ld/magnusconsulting-co-uk</a>. You need to be invited as a collaborator before anything else will work.</p>
+            <p>The Magnus website lives in a private GitHub repo at <a href="https://github.com/MagnusConsulting/magnusconsulting-co-uk">github.com/MagnusConsulting/magnusconsulting-co-uk</a>. You need to be invited as a collaborator before anything else will work.</p>
 
             <div class="expect">
                 <h3>What to do</h3>
@@ -377,7 +377,7 @@ pre .copy-hint {
                     <li>Tell the build team (or the partner who owns the website) your GitHub username — the one you'll be signed in as.</li>
                     <li>Wait for the invitation email. It comes from <strong>noreply@github.com</strong>.</li>
                     <li>Click <strong>Accept invitation</strong> in the email — this opens GitHub in your browser and confirms access.</li>
-                    <li>Sanity check: visit <code>https://github.com/ssu96ld/magnusconsulting-co-uk</code>. If you see the repo, you're in. If you see a 404 page, the invitation hasn't been sent or accepted yet.</li>
+                    <li>Sanity check: visit <code>https://github.com/MagnusConsulting/magnusconsulting-co-uk</code>. If you see the repo, you're in. If you see a 404 page, the invitation hasn't been sent or accepted yet.</li>
                 </ol>
             </div>
 
@@ -395,7 +395,7 @@ pre .copy-hint {
         <div class="step">
             <span class="step-num">2</span>
             <h2>Install everything from Terminal <span class="est">~10 min · one paste</span></h2>
-            <p>One paste in Terminal does the whole machine setup: installs Homebrew (a package manager), the GitHub CLI, Node.js, signs you in to GitHub, clones the Magnus website into <code>~/Projects/Claude/magnus-website</code>, and installs its dependencies. After this, Claude has nothing to download — it just opens the folder and works.</p>
+            <p>One paste in Terminal does the whole machine setup: installs Homebrew (a package manager), the GitHub CLI, Node.js, signs you in to GitHub, clones the Magnus website's <code>staging</code> branch (the live site for admins — CI auto-deploys it to <code>staging.magnusconsulting.co.uk</code>) into <code>~/Projects/Claude/magnus-website</code>, and installs its dependencies. After this, Claude has nothing to download — it just opens the folder and works.</p>
 
             <ol>
                 <li>Open <strong>Terminal</strong>: hit <kbd>⌘ + Space</kbd>, type <code>Terminal</code>, press Return.</li>
@@ -407,7 +407,7 @@ pre .copy-hint {
   && brew install gh node \
   && gh auth login \
   && mkdir -p ~/Projects/Claude \
-  && gh repo clone ssu96ld/magnusconsulting-co-uk ~/Projects/Claude/magnus-website \
+  && gh repo clone MagnusConsulting/magnusconsulting-co-uk ~/Projects/Claude/magnus-website -- --branch staging \
   && (cd ~/Projects/Claude/magnus-website && npm install)</code></pre>
 
             <div class="expect">
@@ -485,7 +485,7 @@ pre .copy-hint {
                 <li>In the dialog that appears, paste the GitHub path below and confirm:</li>
             </ol>
 
-<pre><code>ssu96ld/magnus-claude-plugins</code></pre>
+<pre><code>MagnusConsulting/magnus-claude-plugins</code></pre>
 
             <ol start="4">
                 <li>Click <strong>Personal</strong> in the same menu — you'll see a new plugin called <code>magnus-site</code>. Click it, then install.</li>
@@ -542,7 +542,7 @@ pre .copy-hint {
 
         <div class="callout warn">
             <h3>"Authentication failed" or "Repository not found" during the <code>gh repo clone</code> step</h3>
-            <p>Step 1 — repo access — hasn't completed. Either you haven't been invited yet, or you haven't accepted the invitation email. Visit <code>https://github.com/ssu96ld/magnusconsulting-co-uk</code> in a browser to confirm you can see it. If you see a 404, ask the build team to invite you (and check Spam for the invite email). Once access is fixed, re-run just the clone + install part: <code>gh repo clone ssu96ld/magnusconsulting-co-uk ~/Projects/Claude/magnus-website && (cd ~/Projects/Claude/magnus-website && npm install)</code>.</p>
+            <p>Step 1 — repo access — hasn't completed. Either you haven't been invited yet, or you haven't accepted the invitation email. Visit <code>https://github.com/MagnusConsulting/magnusconsulting-co-uk</code> in a browser to confirm you can see it. If you see a 404, ask the build team to invite you (and check Spam for the invite email). Once access is fixed, re-run just the clone + install part: <code>gh repo clone MagnusConsulting/magnusconsulting-co-uk ~/Projects/Claude/magnus-website -- --branch staging && (cd ~/Projects/Claude/magnus-website && npm install)</code>.</p>
         </div>
 
         <div class="callout warn">
@@ -571,7 +571,7 @@ pre .copy-hint {
 <footer class="footer">
     <div class="footer-inner">
         <div>Magnus Site Admin Toolkit · Quick start · v1.0</div>
-        <div>Source: <a href="https://github.com/ssu96ld/magnus-claude-plugins">github.com/ssu96ld/magnus-claude-plugins</a></div>
+        <div>Source: <a href="https://github.com/MagnusConsulting/magnus-claude-plugins">github.com/MagnusConsulting/magnus-claude-plugins</a></div>
     </div>
 </footer>
 

@@ -538,7 +538,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
             </div>
             <div class="loop-step">
                 <h4>Publish</h4>
-                <p>Ask Claude to "ship it" or "publish". The change goes onto a branch, opens a PR for one final review, and goes live once that PR is merged.</p>
+                <p>Ask Claude to "ship it" or "publish". Claude validates the build, commits your changes to the <code>staging</code> branch with every approval line embedded, and pushes. CI auto-deploys to <code>staging.magnusconsulting.co.uk</code> in a minute or two.</p>
             </div>
         </div>
     </div>
@@ -798,7 +798,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
                 <span class="recipe-section-label">Try saying</span>
                 <p class="try-saying">Ship it</p>
                 <p class="try-saying">Publish the changes I just made</p>
-                <p class="try-saying">Open a PR for the team page updates</p>
+                <p class="try-saying">Push the team page updates to staging</p>
             </div>
 
             <div class="recipe-section">
@@ -806,10 +806,10 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
                 <ol class="steps-inline">
                     <li>Run a quick check that nothing breaks the design system rules.</li>
                     <li>Run the build to make sure the site still compiles.</li>
-                    <li>Create a branch, commit your changes with all the approval lines you gave inline in the message, and push.</li>
-                    <li>Open a pull request on GitHub for one final review, and hand you the URL.</li>
+                    <li>Commit your changes onto the <code>staging</code> branch, with every approval line you gave embedded in the message.</li>
+                    <li>Push to GitHub. CI auto-deploys to <code>staging.magnusconsulting.co.uk</code> in a minute or two.</li>
                 </ol>
-                <p>The site goes live once that PR is merged. Claude never pushes straight to <code>main</code> — that's the safety net.</p>
+                <p>The <code>staging</code> branch <em>is</em> the live site for admins — every push goes live. Claude only ever publishes from <code>staging</code> and will refuse to operate on any other branch.</p>
             </div>
         </div>
     </div>
@@ -843,7 +843,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
 <pre><code>approved by &lt;name&gt;</code></pre>
                 <p>For client metrics, you'll be asked for a second line that names the client and metric specifically:</p>
 <pre><code>approved by Teresa Allan for DHL pipeline metric</code></pre>
-                <p>Paste the line in chat. Claude records it in the audit log and continues. The approver's name ends up in the commit message and the PR description, so you can prove sign-off later.</p>
+                <p>Paste the line in chat. Claude records it in the audit log and continues. The approver's name ends up in the commit message that gets pushed to <code>staging</code>, so you can prove sign-off later.</p>
             </div>
         </div>
 
@@ -890,14 +890,14 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
         <ol class="steps-inline">
             <li><strong>Validation.</strong> Claude runs the design-system checker. If anything's off — a missing alt tag, a meta description out of bounds — it'll tell you and stop.</li>
             <li><strong>Build.</strong> Claude runs the production build to make sure the site still compiles cleanly.</li>
-            <li><strong>Branch.</strong> A new branch is created off <code>main</code> (something like <code>change/team-update-260501</code>). Your changes are committed onto that branch, with every approval line you gave embedded in the commit message.</li>
-            <li><strong>Pull request.</strong> Claude opens a PR on GitHub and gives you the URL. The PR description lists every change and every approver — clear audit trail.</li>
-            <li><strong>Merge.</strong> A reviewer (developer or partner) opens the PR, reviews it, and merges it. The deploy fires automatically when the merge lands.</li>
+            <li><strong>Commit.</strong> Your changes are staged and committed onto the <code>staging</code> branch, with every approval line you gave embedded in the commit message — clear audit trail.</li>
+            <li><strong>Push.</strong> Claude pushes <code>staging</code> to GitHub. If <code>staging</code> moved while you were working, Claude rebases on top first (or stops and asks you to resolve conflicts).</li>
+            <li><strong>Deploy.</strong> CI picks up the push and auto-deploys to <code>staging.magnusconsulting.co.uk</code> — usually live within a minute or two.</li>
         </ol>
 
         <div class="callout warn">
-            <h4>Why a PR and not a direct push?</h4>
-            <p>It's the safety net. The toolkit tries hard to stop bad changes, but a second pair of eyes is cheap insurance against the cases nobody anticipated. The PR review is the last gate before the change is live.</p>
+            <h4>What about a separate review step?</h4>
+            <p>The safety net is built in <em>before</em> the push: approval lines on every gated change, the design-system checker, and the production build all have to pass. Once they do, the change ships straight to <code>staging</code> — that's the site Magnus admins look at as "live". Promoting <code>staging</code> further (to a public production environment, if and when that exists) is a separate, manual process owned by the build team.</p>
         </div>
     </div>
 </section>
@@ -939,7 +939,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
 
             <div class="callout warn">
                 <h4>You changed your mind after Claude saved.</h4>
-                <p>Tell Claude to <em>"undo the last change"</em> or <em>"revert the team edit"</em>. As long as you haven't published yet, the change is local and easy to roll back. If you've already published, the build team can revert the PR.</p>
+                <p>Tell Claude to <em>"undo the last change"</em> or <em>"revert the team edit"</em>. As long as you haven't published yet, the change is local and easy to roll back. If you've already published, the build team can revert the commit on <code>staging</code> — it'll auto-deploy the revert in a minute or two.</p>
             </div>
         </div>
     </div>
@@ -1012,7 +1012,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
                 </tr>
                 <tr>
                     <td class="say">"Ship it" / "Publish the changes I just made"</td>
-                    <td>Open a PR for review</td>
+                    <td>Push to <code>staging</code> — auto-deploys to staging.magnusconsulting.co.uk</td>
                 </tr>
                 <tr>
                     <td class="say">"Undo the last change"</td>

@@ -489,7 +489,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
             <li><strong>The website is code, not a database.</strong> It lives in GitHub as an Astro project. Pages, components, content — all version-controlled files.</li>
             <li><strong>Claude is your personal web designer.</strong> It knows the design system, the brand voice, the component library, and the publishing rules. It does the work.</li>
             <li><strong>You stay in plain English.</strong> "Fix that typo." "Add Frank's bio to the team page." "Publish the GTM Confidence Index." Claude figures out the rest.</li>
-            <li><strong>The safety rails are baked in.</strong> Approval gates on legal pages and client metrics. Every change goes through a pull request. Nothing ships straight to <code>main</code>.</li>
+            <li><strong>The safety rails are baked in.</strong> Approval gates on legal pages and client metrics. Every gated change records who signed off, embedded into the commit history on <code>staging</code>.</li>
         </ul>
 
         <div class="note">
@@ -582,7 +582,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
             <div class="skill-card"><code>magnus-update-nav</code><span>Edit the main nav and footer links</span></div>
             <div class="skill-card"><code>magnus-manage-assets</code><span>Upload photos, logos, PDFs</span></div>
             <div class="skill-card"><code>magnus-preview</code><span>Show the live dev version of the site</span></div>
-            <div class="skill-card"><code>magnus-publish</code><span>Validate, build, branch, and open a PR</span></div>
+            <div class="skill-card"><code>magnus-publish</code><span>Validate, build, commit to <code>staging</code>, push — auto-deploys</span></div>
         </div>
 
         <div class="note">
@@ -746,7 +746,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
 
         <ul>
             <li>You paste the line in chat. Claude records it in <code>.magnus-changes/pending.log</code>.</li>
-            <li>The approval travels with the change — into the commit message and the PR description.</li>
+            <li>The approval travels with the change — embedded into the commit message that lands on <code>staging</code>.</li>
             <li>Audit trail: months later, anyone can see who signed off on what.</li>
             <li>Client metrics are <strong>double-gated</strong> — one approval for the story, one for the number.</li>
         </ul>
@@ -764,7 +764,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
         <div class="slide-num">10</div>
         <span class="eyebrow">Step 10</span>
         <h2>Publish to live.</h2>
-        <p class="slide-lede">When you're happy with the preview, ship it. Two words. Claude takes care of every step from your laptop to a pull request waiting on GitHub.</p>
+        <p class="slide-lede">When you're happy with the preview, ship it. Two words. Claude takes care of every step from your laptop to the live staging site.</p>
 
         <div class="demo">
             <span class="demo-label">Say to Claude</span>
@@ -775,19 +775,19 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
         <ol>
             <li><strong>Validate.</strong> Run the design-system checker. Anything off — a missing alt tag, a meta length out of bounds — and Claude stops to fix it first.</li>
             <li><strong>Build.</strong> Run the production build to confirm the site still compiles.</li>
-            <li><strong>Branch &amp; commit.</strong> A new branch off <code>main</code> with every approval line embedded in the commit message.</li>
-            <li><strong>Push &amp; PR.</strong> Claude opens a pull request on GitHub and hands you the URL. The PR description lists every change and every approver.</li>
-            <li><strong>Merge.</strong> A reviewer checks it, merges, and the site auto-deploys.</li>
+            <li><strong>Commit.</strong> Stage your changes and commit to the <code>staging</code> branch with every approval line embedded in the commit message.</li>
+            <li><strong>Push.</strong> Claude pushes <code>staging</code> to GitHub.</li>
+            <li><strong>Auto-deploy.</strong> CI picks up the push and deploys to <code>staging.magnusconsulting.co.uk</code> — usually live within a minute or two.</li>
         </ol>
 
         <div class="note">
-            <h3>Why a PR — not a direct push</h3>
-            <p>It's the safety net. The toolkit blocks most bad changes; a second pair of eyes catches the rest. Branch protection on <code>main</code> means it's not optional — every change goes through review before it goes live. Five-minute round trip; zero "how did that get on the site" moments.</p>
+            <h3>Where the safety lives</h3>
+            <p>The safety net sits <em>before</em> the push, not after. Approval lines on gated changes, the design-system checker, and the production build all have to pass. Once they do, the change ships straight to <code>staging</code> — that's the site Magnus admins look at as "live". Promoting <code>staging</code> further (to a separate production environment) is a manual process owned by the build team.</p>
         </div>
 
         <div class="note">
             <h3>Closing demo</h3>
-            <p>Run <em>"ship it"</em> on the changes you've made during the session. Show the PR URL Claude gives you, click into GitHub, walk through the commit message and PR description with the approval lines embedded. That's the full loop.</p>
+            <p>Run <em>"ship it"</em> on the changes you've made during the session. Claude commits to <code>staging</code>, pushes, and tells you the deploy is on its way. Open <code>staging.magnusconsulting.co.uk</code>, refresh, and the change is there. That's the full loop.</p>
         </div>
     </div>
 </section>
@@ -797,7 +797,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
     <div class="container">
         <span class="eyebrow" style="color:var(--turquoise);">That's the system</span>
         <h2>You can now run the website.</h2>
-        <p>Setup once. After that, every change is a conversation. Plain English in. Reviewed PR out. Live site five minutes later.</p>
+        <p>Setup once. After that, every change is a conversation. Plain English in. Live on <code>staging.magnusconsulting.co.uk</code> a minute later.</p>
         <div class="links">
             <a href="./quick-start.html">Quick start →</a>
             <a href="./admin-guide.html">User guide →</a>
