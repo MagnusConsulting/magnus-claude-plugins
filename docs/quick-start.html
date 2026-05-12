@@ -389,20 +389,26 @@ pre .copy-hint {
     </div>
 </section>
 
-<!-- ─── Step 2 — Homebrew + gh ─── -->
+<!-- ─── Step 2 — Install everything ─── -->
 <section class="section section-bg-alt">
     <div class="container">
         <div class="step">
             <span class="step-num">2</span>
-            <h2>Install the GitHub CLI <span class="est">~5 min · one terminal command</span></h2>
-            <p>The toolkit needs Git credentials on your Mac so it can clone, commit, and open pull requests. The cleanest way to set that up — even if you've never opened Terminal before — is to install Homebrew (a package manager) and then the GitHub CLI in one go.</p>
+            <h2>Install everything from Terminal <span class="est">~10 min · one paste</span></h2>
+            <p>One paste in Terminal does the whole machine setup: installs Homebrew (a package manager), the GitHub CLI, Node.js, signs you in to GitHub, clones the Magnus website into <code>~/Projects/Claude/magnus-website</code>, and installs its dependencies. After this, Claude has nothing to download — it just opens the folder and works.</p>
 
             <ol>
                 <li>Open <strong>Terminal</strong>: hit <kbd>⌘ + Space</kbd>, type <code>Terminal</code>, press Return.</li>
-                <li>Copy the entire command in the box below. <strong>Paste it into Terminal and press Return.</strong></li>
+                <li>Copy the entire block below. <strong>Paste it into Terminal and press Return.</strong></li>
             </ol>
 
-<pre><span class="copy-hint">// paste this whole line into Terminal</span><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)" && brew install gh && gh auth login</code></pre>
+<pre><span class="copy-hint">// paste this whole block into Terminal</span><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
+  && eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)" \
+  && brew install gh node \
+  && gh auth login \
+  && mkdir -p ~/Projects/Claude \
+  && gh repo clone ssu96ld/magnusconsulting-co-uk ~/Projects/Claude/magnus-website \
+  && (cd ~/Projects/Claude/magnus-website && npm install)</code></pre>
 
             <div class="expect">
                 <h3>What to expect — three pause points</h3>
@@ -417,27 +423,32 @@ pre .copy-hint {
                     </li>
                     <li>
                         <span class="prompts-when">? What account do you want to log into?</span>
-                        <span class="prompts-do">Choose <strong>GitHub.com</strong>. Then HTTPS → Yes (authenticate Git) → Login with a web browser. Copy the one-time code shown, hit Return, your browser opens, paste the code, click <strong>Authorize</strong>. Back in Terminal, you'll see a green checkmark.</span>
+                        <span class="prompts-do">Choose <strong>GitHub.com</strong>. Then HTTPS → Yes (authenticate Git) → Login with a web browser. Copy the one-time code shown, hit Return, your browser opens, paste the code, click <strong>Authorize</strong>. Back in Terminal, you'll see a green checkmark — and the rest of the script continues automatically.</span>
                     </li>
                 </ul>
             </div>
 
-            <p>Total time: ~5 minutes. The longest part is Homebrew downloading and compiling — let it run.</p>
+            <p>Total time: ~10 minutes. Homebrew downloading and compiling is the longest part, then <code>npm install</code> at the end takes 30–60 seconds. Once Terminal returns you to a normal prompt with no red error text, you're done.</p>
 
             <div class="callout teal">
                 <h3>Sanity check</h3>
-                <p>After it finishes, type <code>gh auth status</code> and press Return. You should see <strong>✓ Logged in to github.com</strong> with your username. If yes, you're done with step 2.</p>
+                <p>Type <code>ls ~/Projects/Claude/magnus-website</code> and press Return. You should see folders like <code>src</code>, <code>docs</code>, <code>public</code>, and a <code>package.json</code> file. If yes, the website is on your Mac and ready.</p>
+            </div>
+
+            <div class="callout warn">
+                <h3>Why <code>~/Projects/Claude/</code> and not Documents?</h3>
+                <p>On many work Macs, <code>Documents</code> is synced through OneDrive, which silently replaces files with symlinks and breaks <code>git</code> and <code>npm</code>. <code>~/Projects/Claude/</code> stays off OneDrive and is also the path the toolkit's helper looks in by default — so every doc and skill assumes it.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ─── Step 3 — Make sure you have Claude ─── -->
+<!-- ─── Step 3 — Open the project in Claude ─── -->
 <section class="section section-bg-light">
     <div class="container">
         <div class="step">
             <span class="step-num">3</span>
-            <h2>Open Claude <span class="est">~2 min</span></h2>
+            <h2>Open the project in Claude <span class="est">~2 min</span></h2>
             <p>You need any one of these — whichever you prefer. They all work with the toolkit.</p>
 
             <ul>
@@ -447,6 +458,15 @@ pre .copy-hint {
             </ul>
 
             <p>Sign in to your Claude account if you haven't already. The plugin works on a paid plan (Pro / Max / Team / Enterprise).</p>
+
+            <div class="expect">
+                <h3>Point Claude at the cloned folder</h3>
+                <p>Step 2 cloned the website to <code>~/Projects/Claude/magnus-website</code>. Open Claude there so every skill resolves paths correctly.</p>
+                <ul>
+                    <li><strong>Claude Desktop / Cowork:</strong> click <strong>+ New Project</strong>, name it <code>magnus-website</code> (with a <strong>hyphen</strong>), and choose <code>~/Projects/Claude/magnus-website</code> as the folder. The folder already exists with the website inside it — Claude just adopts it.</li>
+                    <li><strong>Claude Code CLI:</strong> in Terminal, run <code>cd ~/Projects/Claude/magnus-website && claude</code>.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>
@@ -457,51 +477,49 @@ pre .copy-hint {
         <div class="step">
             <span class="step-num">4</span>
             <h2>Install the Magnus plugin <span class="est">~1 min</span></h2>
-            <p>Inside any Claude session, paste these three commands one at a time. Press Return after each.</p>
+            <p>Add the Magnus marketplace through Claude's UI, then install the plugin from it.</p>
 
-<pre><code>/plugin marketplace add ssu96ld/magnus-claude-plugins
-/plugin install magnus-site
-/reload-plugins</code></pre>
+            <ol>
+                <li>In Claude (Cowork or Code), click <strong>Customise</strong> in the top-left menu.</li>
+                <li>Click the <strong>+</strong> button, choose <strong>Create plugin</strong>, then <strong>Add marketplace</strong>.</li>
+                <li>In the dialog that appears, paste the GitHub path below and confirm:</li>
+            </ol>
+
+<pre><code>ssu96ld/magnus-claude-plugins</code></pre>
+
+            <ol start="4">
+                <li>Click <strong>Personal</strong> in the same menu — you'll see a new plugin called <code>magnus-site</code>. Click it, then install.</li>
+            </ol>
 
             <div class="expect">
                 <h3>What to expect</h3>
-                <p>The first command tells Claude where to find the plugin. The second installs it. The third reloads Claude so the new skills become available. After that, Claude knows how to edit the Magnus website.</p>
-                <p>If the first command asks "Are you sure?" or similar, say yes — it's just confirming you want to add a third-party marketplace.</p>
+                <p>Claude may show a security or trust warning when you add the marketplace or install the plugin — accept it. Once installed, Claude knows how to edit the Magnus website.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ─── Step 5 — Run setup ─── -->
+<!-- ─── Step 5 — Verify ─── -->
 <section class="section section-bg-light">
     <div class="container">
         <div class="step">
             <span class="step-num">5</span>
-            <h2>Get the website onto your Mac <span class="est">~3 min</span></h2>
-            <p>Tell Claude — in plain English — to set things up:</p>
+            <h2>Confirm it all works <span class="est">~1 min</span></h2>
+            <p>In the chat for your <code>magnus-website</code> project, type:</p>
 
 <pre><code>Run magnus-setup</code></pre>
 
             <div class="expect">
-                <h3>What Claude will do</h3>
-                <ol>
-                    <li>Check if you already have the website folder on your Mac. (You don't — it's your first time.)</li>
-                    <li>Offer to clone it for you. Say <strong>yes</strong>.</li>
-                    <li>Ask where to put it. Default is fine: a subfolder in your current location, named <code>magnusconsulting-co-uk</code>.</li>
-                    <li>Run <code>npm install</code> to set up the website's dependencies. This takes 30 seconds to a minute.</li>
-                    <li>Tell you the absolute path of the cloned folder, and ask you to <strong>start a new Claude session with that folder as the working directory</strong>.</li>
-                </ol>
+                <h3>What you should see</h3>
+                <p>Claude will check the project folder for the three markers it needs and respond with something like:</p>
+                <p style="font-style:italic; color:var(--navy);">"You're in the magnus repo at <code>/Users/&lt;you&gt;/Projects/Claude/magnus-website</code>. Everything is ready — go ahead and use any of the magnus-site skills."</p>
+                <p>If you see that, the toolkit is wired up correctly. You're done.</p>
             </div>
 
-            <div class="callout">
-                <h3>Why a new session?</h3>
-                <p>Claude's idea of "what folder am I in" is set when the session starts and doesn't change mid-flow. To use the rest of the toolkit, you start fresh inside the magnus folder. Once there, Claude has everything it needs.</p>
+            <div class="callout warn">
+                <h3>If Claude says it can't find the magnus repo</h3>
+                <p>The project was opened against the wrong folder. Close the chat and re-create the Claude Project pointed at <code>~/Projects/Claude/magnus-website</code> (Claude Desktop / Cowork), or run <code>cd ~/Projects/Claude/magnus-website && claude</code> (Claude Code). Then try Step 5 again.</p>
             </div>
-
-            <ul>
-                <li><strong>In Claude Code:</strong> in Terminal, <code>cd</code> into the cloned folder, then run <code>claude</code>.</li>
-                <li><strong>In Claude Desktop / Cowork:</strong> start a new session and pick the cloned folder as the project folder.</li>
-            </ul>
         </div>
     </div>
 </section>
@@ -523,18 +541,23 @@ pre .copy-hint {
         <h2>Common first-run issues.</h2>
 
         <div class="callout warn">
-            <h3>"Authentication failed" or "Repository not found" when Claude tries to clone</h3>
-            <p>Step 1 — repo access — hasn't completed. Either you haven't been invited yet, or you haven't accepted the invitation email. Visit <code>https://github.com/ssu96ld/magnusconsulting-co-uk</code> in a browser to confirm you can see it. If you see a 404, ask the build team to invite you (and check Spam for the invite email).</p>
+            <h3>"Authentication failed" or "Repository not found" during the <code>gh repo clone</code> step</h3>
+            <p>Step 1 — repo access — hasn't completed. Either you haven't been invited yet, or you haven't accepted the invitation email. Visit <code>https://github.com/ssu96ld/magnusconsulting-co-uk</code> in a browser to confirm you can see it. If you see a 404, ask the build team to invite you (and check Spam for the invite email). Once access is fixed, re-run just the clone + install part: <code>gh repo clone ssu96ld/magnusconsulting-co-uk ~/Projects/Claude/magnus-website && (cd ~/Projects/Claude/magnus-website && npm install)</code>.</p>
         </div>
 
         <div class="callout warn">
-            <h3>Terminal says <code>command not found: brew</code> after pasting the install command</h3>
-            <p>Homebrew installed but the shell session doesn't see it yet. Quit Terminal entirely (⌘+Q), open a fresh Terminal, and try <code>gh auth login</code> directly. If that works, you're set — the previous steps already finished.</p>
+            <h3>The paste stopped partway with a red error</h3>
+            <p>The chained commands run with <code>&&</code>, so the first failure halts the rest. Read the last red line in Terminal — it almost always names what failed (Homebrew, <code>gh</code> auth, the clone, or <code>npm install</code>). Fix that one thing, then re-run from where it stopped. The script is safe to re-run end-to-end: already-installed pieces are skipped.</p>
         </div>
 
         <div class="callout warn">
-            <h3>Claude says it can't find authentication and suggests installing <code>gh</code></h3>
-            <p>You've already installed <code>gh</code> in step 2 — Claude is just defaulting to that suggestion. Run <code>gh auth status</code> in Terminal to confirm you're still logged in. If yes, the issue is repo access (step 1). If <code>gh auth status</code> says you're logged out, run <code>gh auth login</code> again.</p>
+            <h3>Terminal says <code>command not found: brew</code></h3>
+            <p>Homebrew installed but the shell session doesn't see it yet. Quit Terminal entirely (⌘+Q), open a fresh Terminal, and paste the same block again — already-installed pieces will skip and the rest will run.</p>
+        </div>
+
+        <div class="callout warn">
+            <h3>Claude says "This folder isn't the magnus repo"</h3>
+            <p>The Claude Project is pointed at the wrong folder. Close the chat, delete the project (or create a new one), and point it at <code>~/Projects/Claude/magnus-website</code>. In Claude Code, run <code>cd ~/Projects/Claude/magnus-website && claude</code> instead.</p>
         </div>
 
         <div class="callout">

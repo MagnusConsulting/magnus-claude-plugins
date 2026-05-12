@@ -39,9 +39,9 @@ If all three present → use **Path C**.
 
 If any are missing, the working directory isn't the magnus repo. Don't try to start a server. Tell the user:
 
-> This folder isn't the magnus repo (preview needs `package.json`, `src/pages/`, `docs/llm-context.md`). Want me to:
-> 1. Run **magnus-setup** to clone the repo here or locate an existing clone, or
-> 2. Exit so you can `cd` to the magnus repo and re-run this skill?
+> This folder isn't the magnus repo (preview needs `package.json`, `src/pages/`, `docs/llm-context.md`). The toolkit needs `~/Projects/Claude/magnus-website` as the project folder. Want me to:
+> 1. Run **magnus-setup** for the install / re-open instructions, or
+> 2. Exit so you can re-open this Claude project pointed at `~/Projects/Claude/magnus-website` and try again?
 
 Wait for direction. If they pick 1, invoke **magnus-setup**. If they pick 2, stop.
 

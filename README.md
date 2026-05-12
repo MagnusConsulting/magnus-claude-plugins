@@ -21,7 +21,7 @@ Skills that let non-technical admins create and edit pages on the Magnus Consult
 
 | Skill | Purpose |
 |---|---|
-| `magnus-setup` | Bootstrap the magnus website repo so the other skills can run. Clones `ssu96ld/magnusconsulting-co-uk` into the current folder, accepts a path to an existing clone, or hands off cleanly so the user can `cd` themselves. Runs `npm install` after cloning. |
+| `magnus-setup` | Verify the current Claude session is pointed at the magnus website repo at the canonical path (`~/Projects/Claude/magnus-website`). If not, prints the one-paste Terminal install (Homebrew + `gh` + Node + `gh repo clone` + `npm install`) and tells the user to re-open the project there. Never clones or installs from inside Claude — the install lives in Terminal so the first working session is the working one. |
 | `magnus-edit-page` | Edit copy, headings, CTAs, SEO, or component props on an existing page. Refuses off-system changes. Enforces approval gates on legal pages, growth stories, the homepage hero, and any client metric. Auto-navigates the live preview pane to the edited page. |
 | `magnus-add-insight-article` | Create a new article under `/insights/<slug>`. Generates the full page from the canonical template and inserts a matching `ArticleCard` at the top of the `/insights` grid. Enforces the four documented categories, the four known authors, and a content sign-off gate. Auto-navigates the live preview pane to the new article. |
 | `magnus-add-team-member` | Add a new team member profile by appending a typed entry to `src/data/team.ts`. The dynamic route at `/team/[slug]` auto-generates the bio page; the team index surfaces the matching card. Enforces the documented data shape, the five team groups, the solution-label → href mapping, and a content sign-off gate. Auto-navigates the live preview to the new bio. |
@@ -46,7 +46,7 @@ Tools exposed:
 |---|---|
 | `magnus_helper_ping` | Diagnostics — hostname, platform, plugin root, working directory. Used to confirm the helper is reachable. |
 | `magnus_dev_status` | Cheap idempotent check: is `npm run dev` running on `localhost:4321`? |
-| `magnus_dev_start` | Start the dev server in the background. Idempotent. Resolves the magnus repo path by scanning `~/dev`, `~/Documents`, `~/Sites`, `~/Projects`, `~/Code`, `~/Developer` (2 levels deep) and persisting the choice at `~/.config/magnus-helper/config.json`. Returns `AMBIGUOUS_REPO` / `REPO_NOT_FOUND` errors when the caller needs to ask the user. |
+| `magnus_dev_start` | Start the dev server in the background. Idempotent. Resolves the magnus repo path by checking the canonical install location `~/Projects/Claude/magnus-website` first, then scanning `~/dev`, `~/Documents`, `~/Sites`, `~/Projects`, `~/Code`, `~/Developer` (2 levels deep), and persisting the choice at `~/.config/magnus-helper/config.json`. Returns `AMBIGUOUS_REPO` / `REPO_NOT_FOUND` errors when the caller needs to ask the user. |
 | `magnus_dev_stop` | Stop whatever is on port 4321 (TERM via `lsof + kill`). |
 | `magnus_open_url` | Open a `localhost:4321` URL in the user's default browser. Refuses anything else. |
 | `magnus_set_repo_path` | Persist an absolute path to the magnus repo on disk. Used after `AMBIGUOUS_REPO` / `REPO_NOT_FOUND`. |

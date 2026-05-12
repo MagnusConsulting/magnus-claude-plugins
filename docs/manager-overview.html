@@ -644,9 +644,9 @@ pre code {
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>magnus-setup</strong><br><span class="tag tag-outline">bootstrap</span></td>
-                        <td>Detects whether the admin is in the Magnus website folder. If not, offers to clone the repo from GitHub, run <code>npm install</code>, and tell the admin where the resulting folder lives. Every other skill prompts to run this if the website repo isn't present.</td>
-                        <td><code>./magnusconsulting-co-uk/</code> (cloned)</td>
+                        <td><strong>magnus-setup</strong><br><span class="tag tag-outline">verify</span></td>
+                        <td>Detects whether the current Claude Project is pointed at the Magnus website folder. If yes, confirms readiness. If not, prints the canonical Terminal one-paste install (Homebrew + <code>gh</code> + Node + clone + <code>npm install</code> targeting <code>~/Projects/Claude/magnus-website</code>) and tells the admin to re-open the project there. Never clones or installs from inside the Claude session — Claude's working directory is fixed at session start, so the install belongs in Terminal.</td>
+                        <td>none (read-only)</td>
                         <td><span class="tag tag-outline">none</span></td>
                     </tr>
                     <tr>
@@ -803,7 +803,7 @@ pre code {
 /plugin install magnus-site
 /reload-plugins</code></pre>
 
-        <p>From that point, the admin can ask Claude — in plain English — to edit a page, add an article, add a team member, or preview the site. The skills handle the rest. The first time a skill runs, <code>magnus-setup</code> kicks in if the website repo isn't already on disk.</p>
+        <p>From that point, the admin can ask Claude — in plain English — to edit a page, add an article, add a team member, or preview the site. The skills handle the rest. Getting the website source onto the Mac is a one-paste Terminal install (Homebrew + <code>gh</code> + Node + <code>gh repo clone</code> + <code>npm install</code> targeting <code>~/Projects/Claude/magnus-website</code>) done once during the quick-start; <code>magnus-setup</code> then verifies from inside Claude that the project is pointed at that folder.</p>
     </div>
 </section>
 
@@ -860,7 +860,7 @@ pre code {
 
         <h3>Built (v0.1.0 → v0.8.0)</h3>
         <ul>
-            <li><strong>magnus-setup</strong> — bootstrap the website repo on a new Mac.</li>
+            <li><strong>magnus-setup</strong> — verify the Claude Project is pointed at the website repo, or print the Terminal install one-paste if not.</li>
             <li><strong>magnus-edit-page</strong> — edit existing pages with full guardrails.</li>
             <li><strong>magnus-add-insight-article</strong> — create new articles in <code>/insights</code>.</li>
             <li><strong>magnus-add-team-member</strong> — append entries to <code>src/data/team.ts</code> for the dynamic team profile pages.</li>

@@ -29,6 +29,7 @@ const CONFIG_DIR = path.join(os.homedir(), '.config', 'magnus-helper');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 const SCAN_ROOTS = ['dev', 'Documents', 'Sites', 'Projects', 'Code', 'Developer']
   .map((d) => path.join(os.homedir(), d));
+const CANONICAL_REPO_PATH = path.join(os.homedir(), 'Projects', 'Claude', 'magnus-website');
 const MAX_SCAN_DEPTH = 2;
 const READY_TIMEOUT_MS = 30000;
 const POLL_INTERVAL_MS = 500;
@@ -106,6 +107,13 @@ function resolveRepoPath() {
   if (cfg.repoPath && isMagnusRepo(cfg.repoPath)) {
     return { path: cfg.repoPath };
   }
+  // Prefer the canonical install path if it's a valid magnus repo, even if
+  // older clones exist elsewhere. The quick-start docs ask every user to
+  // install here, so it's the right default when nothing is configured.
+  if (isMagnusRepo(CANONICAL_REPO_PATH)) {
+    saveConfig({ ...cfg, repoPath: CANONICAL_REPO_PATH });
+    return { path: CANONICAL_REPO_PATH };
+  }
   const candidates = scanForRepos();
   if (candidates.length === 1) {
     saveConfig({ ...cfg, repoPath: candidates[0] });
@@ -115,7 +123,7 @@ function resolveRepoPath() {
     return {
       error: 'REPO_NOT_FOUND',
       message:
-        'No magnus repo found in ~/dev, ~/Documents, ~/Sites, ~/Projects, ~/Code, ~/Developer (2 levels deep). ' +
+        `No magnus repo found at ${CANONICAL_REPO_PATH} or in ~/dev, ~/Documents, ~/Sites, ~/Projects, ~/Code, ~/Developer (2 levels deep). ` +
         'Ask the user for the absolute path and call magnus_set_repo_path with it.',
     };
   }
@@ -123,7 +131,7 @@ function resolveRepoPath() {
     error: 'AMBIGUOUS_REPO',
     candidates,
     message:
-      `Multiple magnus repos found (${candidates.length}). ` +
+      `Multiple magnus repos found (${candidates.length}) and none at the canonical path ${CANONICAL_REPO_PATH}. ` +
       'Ask the user which one to use and call magnus_set_repo_path with the chosen path.',
   };
 }

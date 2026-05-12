@@ -13,9 +13,9 @@ Read `docs/llm-context.md` in full. Confirm `src/pages/insights/index.astro` exi
 
 If `docs/llm-context.md` is missing, the working directory isn't the magnus repo. Don't proceed. Tell the user:
 
-> This folder isn't the magnus repo (no `docs/llm-context.md` found). Want me to:
-> 1. Run **magnus-setup** to clone the repo here or locate an existing clone, or
-> 2. Exit so you can `cd` to the magnus repo and re-run this skill?
+> This folder isn't the magnus repo (no `docs/llm-context.md` found). The toolkit needs `~/Projects/Claude/magnus-website` as the project folder. Want me to:
+> 1. Run **magnus-setup** for the install / re-open instructions, or
+> 2. Exit so you can re-open this Claude project pointed at `~/Projects/Claude/magnus-website` and try again?
 
 Wait for their direction. If they pick 1, invoke **magnus-setup**. If they pick 2, stop.
 

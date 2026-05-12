@@ -571,7 +571,7 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
         <p class="slide-lede">Each "skill" is a recipe Claude follows. You don't invoke them by name — you describe what you want and Claude picks the right one. But it helps to see the menu.</p>
 
         <div class="skill-grid">
-            <div class="skill-card"><code>magnus-setup</code><span>Bootstrap the site repo on your Mac</span></div>
+            <div class="skill-card"><code>magnus-setup</code><span>Verify the project is wired up (or show install instructions)</span></div>
             <div class="skill-card"><code>magnus-edit-page</code><span>Edit copy, headings, CTAs, SEO on any page</span></div>
             <div class="skill-card"><code>magnus-add-insight-article</code><span>Publish a new article on /insights</span></div>
             <div class="skill-card"><code>magnus-add-team-member</code><span>Add a new bio and card to /team</span></div>
@@ -592,13 +592,13 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
     </div>
 </section>
 
-<!-- ─── 5. Run the setup skill ─── -->
+<!-- ─── 5. Verify with magnus-setup ─── -->
 <section class="slide" id="s5">
     <div class="container">
         <div class="slide-num">05</div>
         <span class="eyebrow">Step 5</span>
-        <h2>Get the website onto your Mac.</h2>
-        <p class="slide-lede">All the skills assume Claude can see the website's source code. The first skill we run does exactly that — it clones the repo and installs the dependencies.</p>
+        <h2>Confirm the project is wired up.</h2>
+        <p class="slide-lede">The website was already cloned to <code>~/Projects/Claude/magnus-website</code> by the Terminal paste in the quick-start. The first thing we ask Claude is just to verify it can see the code.</p>
 
         <div class="demo">
             <span class="demo-label">Say to Claude</span>
@@ -606,21 +606,20 @@ pre code { background: transparent; padding: 0; color: inherit; font-size: inher
         </div>
 
         <ul>
-            <li>Claude checks if the website folder is already on your Mac. (It isn't, today.)</li>
-            <li>Offers to clone it. Say <strong>yes</strong>.</li>
-            <li>Default location is fine: a subfolder named <code>magnusconsulting-co-uk</code>.</li>
-            <li>Runs <code>npm install</code> behind the scenes — 30–60 seconds.</li>
-            <li>Asks you to start a fresh Claude session inside the cloned folder so the rest of the skills can find the code.</li>
+            <li>Claude checks the project folder for the three markers it needs.</li>
+            <li>Sees <code>package.json</code>, <code>src/pages/</code>, and <code>docs/llm-context.md</code> — all present.</li>
+            <li>Reports back: "You're in the magnus repo at <code>/Users/&lt;you&gt;/Projects/Claude/magnus-website</code>. Everything is ready."</li>
+            <li>That's it — no clone, no install, nothing to wait for. Cloning and <code>npm install</code> were done in Terminal during setup; Claude just opens the folder.</li>
         </ul>
 
         <div class="note">
-            <h3>Why a fresh session?</h3>
-            <p>Claude's working directory is fixed at session start. Once you're in the magnus folder, every other skill — preview, edit, add, publish — knows where it is and what it's working with.</p>
+            <h3>Why this works without a fresh session</h3>
+            <p>Claude's working directory is fixed at session start. By cloning the repo to the canonical path in Terminal first and creating the Claude Project against that same path, the first session is already the working one. No "open a new session" detour.</p>
         </div>
 
         <div class="note">
             <h3>Demo flow</h3>
-            <p>Run setup → accept the clone → wait for <code>npm install</code> → close the chat → open a new Claude session in the new folder. Then we're ready to do real work.</p>
+            <p>Open the <code>magnus-website</code> project in Claude → say "run magnus-setup" → see the green confirmation. Then we're ready to do real work.</p>
         </div>
     </div>
 </section>
